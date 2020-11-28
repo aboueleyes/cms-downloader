@@ -9,4 +9,4 @@ sudo apt instsall xclip python3-tk python3-dev chromium-chromedriver
 sudo pip3 install tqdm iterfzf selenium pyautogui clipboard 
 mkdir Downloads/{Math,CS,DE,English,Circuts}
 ```
-You should edit the file accoording to your courses and username and passwords 
+You should edit the file accoording to your courses and username and password
