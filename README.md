@@ -17,8 +17,7 @@ You should edit the file according to your courses , username and password
 usernme ="yourusername"
 paswword = "yourpassword"
 ```
-Tip : you can use regular expressions in search </br>
-to select more than option press tab
+
 # Usage
 ```bash
 cd cms-downloader/
@@ -26,3 +25,5 @@ chmod 755 ./cms-downloader
 sudo ln -s ./cms-downloader /usr/bin/cms-downloader 
 cms-downloader
 ```
+Tip : you can use regular expressions in search </br>
+to select more than option press <tab>
