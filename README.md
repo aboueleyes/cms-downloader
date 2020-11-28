@@ -15,12 +15,11 @@ install dependencies for Arch-based distros
 ```bash
 $ sudo pacman -Sy tk git chromium-chromedriver xclip 
 ```
-```bash
-$ sudo pip install -r requirements.txt
-```
 clone this repo 
 ```bash
 $ git clone https://github.com/aboueleyes/cms-downloader.git
+$ sudo pip install -r requirements.txt
+
 ```
 You should edit the file according to your courses , username and password
 ```python
