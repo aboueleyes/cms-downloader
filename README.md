@@ -13,7 +13,7 @@ $ sudo apt install xclip python3-tk python3-dev chromium-chromedriver git
 ```
 install dependencies for Arch-based distros
 ```bash
-$ sudo pacman -Sy tk git chromium-chromedriver xclip 
+$ sudo pacman -Sy tk git chromedriver xclip 
 ```
 clone this repo 
 ```bash
