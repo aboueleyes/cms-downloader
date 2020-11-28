@@ -1,5 +1,5 @@
 # cms-downloader
-A CLI python script that downloads the materail pdf and videos of any course hosted on the  cms website (for UNIX-Like operating Systems)
+A CLI python script that downloads the material of any course hosted on the  cms website (for UNIX-Like operating Systems)
 *This script is personal I just wanted to share*
 
 
