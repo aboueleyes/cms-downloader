@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 #imports
+
 from tqdm import tqdm
 import os
 from iterfzf import iterfzf 
@@ -13,11 +14,14 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 import pyautogui
 import clipboard
+
 # dir of downloads
+
 user_home = os.environ["HOME"]
 os.chdir(user_home+"/Downloads")
 
 # chromium options 
+
 options = webdriver.ChromeOptions()
 options.add_argument("--mute-audio")
 #options.add_argument("--headless")
@@ -39,6 +43,7 @@ url = "https://cms.guc.edu.eg/apps/student/CourseViewStn.aspx?id=16&sid=52"
 loggin_url = "https://"+user+":"+password+"@"+"cms.guc.edu.eg/apps/student/HomePageStn"+"/1"
 
 # choosing the course 
+
 courses = {"Math","CS","Circuts","Physics","Physics-Lab","English","DE"}
 course = iterfzf(courses)
 Links = {
@@ -54,15 +59,19 @@ course_url = Links.get(course)
 driver = webdriver.Chrome(options=options)
 
 # open the links
+
 driver.get(loggin_url)
 driver.get(course_url)
 
 # scrabing download links 
+
 download_items = driver.find_elements_by_id("download")
 link =[""]*len(download_items)
 new_name =[""]*len(download_items)
 i = 0
+
 # get the link and file name 
+
 for element in tqdm(download_items) :
     link[i] = element.get_attribute('href')
     e = element.find_element_by_xpath("../../..")
@@ -71,6 +80,7 @@ for element in tqdm(download_items) :
 item_to_download = iterfzf(new_name,multi=True)
 
 # Download each item 
+
 for i in tqdm(range(len(item_to_download))) :
     index = new_name.index(item_to_download[i])
     item_link = link[index]
@@ -81,11 +91,12 @@ for i in tqdm(range(len(item_to_download))) :
     url = "window.open("+"\""+item_link+"\""+");"
     driver.execute_script(url)
     # check if the item is video or not :
-    if item_link[-1] == '4' or item_link[-1] == 'v':
+     if item_link[-1] == '4' or item_link[-1] == 'v':
         time.sleep(8)
         clipboard.copy(item_to_download[i])
         pyautogui.hotkey('ctrl','s')
         time.sleep(3)
+        # rename the video name 
         pyautogui.hotkey('ctrl' , 'v')
         pyautogui.hotkey('enter')
         pyautogui.hotkey('enter')
@@ -95,4 +106,5 @@ for i in tqdm(range(len(item_to_download))) :
                 
     else :
         time.sleep(5)
+        # rename the file
         os.rename(old_name,item_to_download[i]+".pdf")
