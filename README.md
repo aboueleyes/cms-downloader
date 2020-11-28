@@ -1,6 +1,6 @@
 # cms-downloader
-A CLI python script that downloads the material of any course hosted on the  cms website (for UNIX-Like operating systems)
-*This script is personal I just wanted to share*
+A CLI python script that downloads the material of any course hosted on the  cms website for *UNIX-Like operating systems*
+
 ## Showcase
 
 [![asciicast](https://asciinema.org/a/K1QAHRyrFyj2Hzulc0y8KXrYa.svg)](https://asciinema.org/a/K1QAHRyrFyj2Hzulc0y8KXrYa)
