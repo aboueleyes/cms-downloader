@@ -11,3 +11,7 @@ sudo pip3 install tqdm iterfzf selenium pyautogui clipboard
 mkdir Downloads/{Math,CS,DE,English,Circuts}
 ```
 You should edit the file according to your courses , username and password
+```bash
+sudo ln -s ./cms-downloader /usr/bin/cms-downloader 
+cms-downloader
+```
