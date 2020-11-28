@@ -40,5 +40,5 @@ $ ./cms-downloader
 Tip : you can use regular expressions in search </br>
 to select more than option press \<tab\>
 # DISCLAIMER
-This script is in no way legally associated with the GUC. It is simply a personal script for automating day-to-day tasks
+This script is in no way legally associated with the GUC. It is simply a personal script for educational purposes only. 
 
