@@ -105,6 +105,7 @@ for i in tqdm(range(len(item_to_download))) :
         pyautogui.hotkey('ctrl','w')
                 
     else :
-        time.sleep(5)
+        while not os.path.isfile(old_name) :
+            time.sleep(0.5)
         # rename the file
         os.rename(old_name,item_to_download[i]+".pdf")
