@@ -19,6 +19,7 @@ clone this repo
 ```bash
 $ git clone https://github.com/aboueleyes/cms-downloader.git
 $ sudo pip install -r requirements.txt
+$ cd cms-downloader/
 
 ```
 You should edit the file according to your courses , username and password
@@ -30,7 +31,6 @@ paswword = "yourpassword"
 # Usage
 ```bash
 
-$ cd cms-downloader/
 $ chmod 755 ./cms-downloader
 $ sudo ln -s ./cms-downloader /usr/bin/cms-downloader 
 $ cms-downloader
