@@ -18,8 +18,8 @@ $ sudo pacman -Sy tk git chromedriver xclip
 clone this repo 
 ```bash
 $ git clone https://github.com/aboueleyes/cms-downloader.git
-$ sudo pip install -r requirements.txt
 $ cd cms-downloader/
+$ sudo pip install -r requirements.txt
 
 ```
 You should edit the file according to your courses , username and password
