@@ -7,10 +7,16 @@ A CLI python script that downloads the material of any course hosted on the  cms
 
 
 # Installation
-install dependencies for debian-based distros
+install dependencies for Debian-based distros
 ```bash
 $ sudo apt install xclip python3-tk python3-dev chromium-chromedriver git
-$ sudo pip3 install tqdm iterfzf selenium pyautogui clipboard 
+```
+install dependencies for Arch-based distros
+```bash
+$ sudo pacman -Sy tk git chromium-chromedriver xclip 
+```
+```bash
+$ sudo pip install -r requirements.txt
 ```
 clone this repo 
 ```bash
