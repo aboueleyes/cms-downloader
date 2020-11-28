@@ -40,3 +40,6 @@ $ cms-downloader
 ```
 Tip : you can use regular expressions in search </br>
 to select more than option press \<tab\>
+# DISCLAIME
+This script is in no way legally associated with the GUC. It is simply a personal script for automating day-to-day tasks
+
