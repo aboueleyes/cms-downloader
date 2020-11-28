@@ -11,7 +11,6 @@ install dependencies for debian-based distros
 ```bash
 sudo apt instsall xclip python3-tk python3-dev chromium-chromedriver 
 sudo pip3 install tqdm iterfzf selenium pyautogui clipboard 
-mkdir Downloads/{Math,CS,DE,English,Circuts}
 ```
 You should edit the file according to your courses , username and password
 ```python
