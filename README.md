@@ -3,7 +3,7 @@ A CLI python script that downloads the material of any course hosted on the  cms
 *This script is personal I just wanted to share*
 
 
-# installation
+# Installation
 install dependencies for debian-based distros
 ```bash
 sudo apt instsall xclip python3-tk python3-dev chromium-chromedriver 
@@ -15,7 +15,7 @@ You should edit the file according to your courses , username and password
 usernme ="yourusername"
 paswword = "yourpassword"
 ```
-# usage
+# Usage
 ```bash
 sudo ln -s ./cms-downloader /usr/bin/cms-downloader 
 cms-downloader
