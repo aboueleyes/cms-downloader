@@ -20,6 +20,7 @@ paswword = "yourpassword"
 ```
 # Usage
 ```bash
+chmod 755 ./cms-downloader
 sudo ln -s ./cms-downloader /usr/bin/cms-downloader 
 cms-downloader
 ```
