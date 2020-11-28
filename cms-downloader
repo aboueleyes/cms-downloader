@@ -75,6 +75,9 @@ for i in tqdm(range(len(item_to_download))) :
     index = new_name.index(item_to_download[i])
     item_link = link[index]
     old_name = "G"+item_link.split('G')[1]
+    if os.path.isfile(item_to_download[i]+".pdf") :
+        print ("file exists")
+        continue
     url = "window.open("+"\""+item_link+"\""+");"
     driver.execute_script(url)
     # check if the item is video or not :
