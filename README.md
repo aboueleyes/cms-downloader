@@ -19,7 +19,7 @@ clone this repo
 ```bash
 $ git clone https://github.com/aboueleyes/cms-downloader.git
 $ cd cms-downloader/
-$ sudo pip install -r requirements.txt
+$ sudo pip3 install -r requirements.txt
 
 ```
 You should edit cms-downloader file  according to your courses , username and password
