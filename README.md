@@ -17,7 +17,7 @@ You should edit the file according to your courses , username and password
 usernme ="yourusername"
 paswword = "yourpassword"
 ```
-Hint : you can use regular expressions in search </br>
+Tip : you can use regular expressions in search </br>
 to select more than option press tab
 # Usage
 ```bash
