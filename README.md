@@ -26,7 +26,6 @@ You should edit cms-downloader file  according to your courses , username and pa
 ```python
 Links = {
   "course_name" : "course_link"
-  
 }
 username ="yourusername"
 paswword = "yourpassword"
