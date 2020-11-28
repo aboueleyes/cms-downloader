@@ -18,7 +18,7 @@ $ git clone https://github.com/aboueleyes/cms-downloader.git
 ```
 You should edit the file according to your courses , username and password
 ```python
-usernme ="yourusername"
+username ="yourusername"
 paswword = "yourpassword"
 ```
 
