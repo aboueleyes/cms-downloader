@@ -22,7 +22,7 @@ $ cd cms-downloader/
 $ sudo pip install -r requirements.txt
 
 ```
-You should edit the file according to your courses , username and password
+You should edit cms-downloader file  according to your courses , username and password
 ```python
 username ="yourusername"
 paswword = "yourpassword"
