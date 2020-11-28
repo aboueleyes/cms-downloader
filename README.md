@@ -1,4 +1,4 @@
-# cms-downloader
+# CMS-downloader
 A CLI python script that downloads the material of any course hosted on the  cms website for *UNIX-Like operating systems*
 
 # Showcase
