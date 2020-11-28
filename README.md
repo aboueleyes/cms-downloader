@@ -3,7 +3,7 @@ A CLI python script that downloads the material of any course hosted on the  cms
 
 # Showcase
 
-[![asciicast](https://asciinema.org/a/K1QAHRyrFyj2Hzulc0y8KXrYa.svg)](https://asciinema.org/a/K1QAHRyrFyj2Hzulc0y8KXrYa)
+[![asciicast](https://asciinema.org/a/DMyCpZoJii6v7gOrT5J5B9ufA.svg)](https://asciinema.org/a/DMyCpZoJii6v7gOrT5J5B9ufA)
 
 
 # Installation
