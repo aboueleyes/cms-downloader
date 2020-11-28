@@ -28,7 +28,7 @@ Links = {
   "course_name" : "course_link"
 }
 username ="yourusername"
-paswword = "yourpassword"
+password = "yourpassword"
 ```
 
 # Usage
