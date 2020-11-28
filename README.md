@@ -35,8 +35,7 @@ paswword = "yourpassword"
 ```bash
 
 $ chmod 755 ./cms-downloader
-$ sudo ln -s ./cms-downloader /usr/bin/cms-downloader 
-$ cms-downloader
+$ ./cms-downloader
 ```
 Tip : you can use regular expressions in search </br>
 to select more than option press \<tab\>
