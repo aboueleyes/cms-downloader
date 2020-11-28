@@ -18,6 +18,8 @@ You should edit the file according to your courses , username and password
 usernme ="yourusername"
 paswword = "yourpassword"
 ```
+Hint : you can use regular expressions in search 
+to selct more thahhn option press tab
 # Usage
 ```bash
 chmod 755 ./cms-downloader
