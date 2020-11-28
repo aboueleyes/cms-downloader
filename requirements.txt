@@ -1,0 +1,5 @@
+tqdm
+iterfzf
+selenium
+pyautogui
+clipboard 
