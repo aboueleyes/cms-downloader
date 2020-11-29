@@ -10,7 +10,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 # dir of downloads
-
+user_home = os.environ["HOME"]
+os.chdir(user_home+"/Downloads")
 # chromium options 
 options = webdriver.ChromeOptions()
 options.add_argument("--mute-audio")
@@ -71,7 +72,7 @@ for i in range(len(item_to_download)) :
     ext = item_link[-4:]
     old_name = "G"+item_link.split('G')[1]
     if os.path.isfile(item_to_download[i]+ext)   :
-        print ("file exists")
+        print ("file already exists skipped. ")
         continue
     # check if the item is video or not :
     command = "wget -q --show-progres  --user "+user+" --password "+password + " --no-check-certificate " + item_link
