@@ -9,11 +9,11 @@ A CLI python script that downloads the material of any course hosted on the  cms
 # Installation
 install dependencies for Debian-based distros
 ```bash
-$ sudo apt install xclip python3-tk python3-dev chromium-chromedriver git
+$ sudo apt install wget chromium-chromedriver git
 ```
 install dependencies for Arch-based distros
 ```bash
-$ sudo pacman -Sy tk git chromedriver xclip 
+$ sudo pacman -Sy wget git chromedriver 
 ```
 clone this repo 
 ```bash
