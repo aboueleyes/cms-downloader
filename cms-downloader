@@ -71,7 +71,7 @@ item_to_download = iterfzf(description,multi=True)
 
 # Download each item 
 for i in range(len(item_to_download)) :
-    index = new_name.index(item_to_download[i])
+    index = description.index(item_to_download[i])
     item_link = link[index]
     file_ext = item_link[-4:]
     old_name = "G"+item_link.split('G')[1]
