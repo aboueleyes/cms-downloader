@@ -6,9 +6,6 @@ import os
 from iterfzf import iterfzf 
 from selenium import webdriver
 
-# dir of downloads
-user_home = os.environ["HOME"]
-os.chdir(user_home+"/Downloads")
 
 # chromium options 
 
@@ -23,7 +20,7 @@ options.add_experimental_option('prefs', {
 })
 driver = webdriver.Chrome(options=options)
 
-# username and password edit this
+# username and password Change here !!
 
 user = ""
 password = ""
@@ -33,7 +30,7 @@ password = ""
 url = "https://cms.guc.edu.eg/apps/student/CourseViewStn.aspx?id=16&sid=52"
 loggin_url = "https://"+user+":"+password+"@"+"cms.guc.edu.eg/apps/student/HomePageStn"+"/1"
 
-# choosing the course 
+# choosing the course *change here!!*
 courses = {"Math","CS","Circuts","Physics","Physics-Lab","English","DE"}
 course = iterfzf(courses)
 Links = {
@@ -50,6 +47,10 @@ course_url = Links.get(course)
 # open the links
 driver.get(loggin_url)
 driver.get(course_url)
+
+# dir of downloads change here !!
+user_home = os.environ["HOME"]
+os.chdir(user_home+"/Downloads")
 
 
 # scrabing download links 
@@ -70,13 +71,13 @@ item_to_download = iterfzf(new_name,multi=True)
 for i in range(len(item_to_download)) :
     index = new_name.index(item_to_download[i])
     item_link = link[index]
-    ext = item_link[-4:]
+    file_ext = item_link[-4:]
     old_name = "G"+item_link.split('G')[1]
 
-    if os.path.isfile(item_to_download[i]+ext)   :
+    if os.path.isfile(item_to_download[i]+file_ext)   :
         print ("file already exists skipped. ")
         continue
     
     command = "wget -q --show-progress  --user "+user+" --password "+password + " --no-check-certificate " + item_link
     os.system(command)
-    os.rename(old_name,item_to_download[i]+ext)
+    os.rename(old_name,item_to_download[i]+file_ext)
