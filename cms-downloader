@@ -59,7 +59,6 @@ link =[""]*len(download_items)
 new_name =[""]*len(download_items)
 description =[""]*len(download_items)
 i = 0
-# get the link and file name 
 for element in tqdm(download_items) :
     link[i] = element.get_attribute('href')
     e = element.find_element_by_xpath("../../..")
