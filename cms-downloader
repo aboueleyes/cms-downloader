@@ -5,23 +5,23 @@ from tqdm import tqdm
 import os
 from iterfzf import iterfzf 
 from selenium import webdriver
-import time
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
+
 # dir of downloads
 user_home = os.environ["HOME"]
 os.chdir(user_home+"/Downloads")
+
 # chromium options 
+
 options = webdriver.ChromeOptions()
-options.add_argument("--mute-audio")
 options.add_argument("--headless")
 options.add_experimental_option('prefs', {
+
 "download.prompt_for_download": False, #To auto download the file
 "download.directory_upgrade": True,
 "plugins.always_open_pdf_externally": True, #It will not show PDF directly in chrome
 "safebrowsing.enabled": True
 })
+driver = webdriver.Chrome(options=options)
 
 # username and password edit this
 
@@ -46,18 +46,17 @@ Links = {
     "DE" : "https://cms.guc.edu.eg/apps/student/CourseViewStn.aspx?id=33&sid=52" 
 }
 course_url = Links.get(course)
-driver = webdriver.Chrome(options=options)
 
 # open the links
 driver.get(loggin_url)
 driver.get(course_url)
 
+
 # scrabing download links 
 download_items = driver.find_elements_by_id("download")
 link =[""]*len(download_items)
 new_name =[""]*len(download_items)
-i = 0
-# get the link and file name 
+i = 0 
 for element in tqdm(download_items) :
     link[i] = element.get_attribute('href')
     e = element.find_element_by_xpath("../../..")
@@ -65,15 +64,19 @@ for element in tqdm(download_items) :
     i+=1
 item_to_download = iterfzf(new_name,multi=True)
 
+
+
 # Download each item 
 for i in range(len(item_to_download)) :
     index = new_name.index(item_to_download[i])
     item_link = link[index]
     ext = item_link[-4:]
     old_name = "G"+item_link.split('G')[1]
+
     if os.path.isfile(item_to_download[i]+ext)   :
         print ("file already exists skipped. ")
         continue
-    command = "wget -q --show-progres  --user "+user+" --password "+password + " --no-check-certificate " + item_link
+    
+    command = "wget -q --show-progress  --user "+user+" --password "+password + " --no-check-certificate " + item_link
     os.system(command)
     os.rename(old_name,item_to_download[i]+ext)
