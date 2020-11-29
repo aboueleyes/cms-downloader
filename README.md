@@ -36,7 +36,7 @@ os.chdir("path")
 ```
 if you want to orgnaise your downloads you can make use of the variable *course*
 ```python
-os.chdir("/home/user/semseter-3"+course)
+os.chdir("/home/user/semseter-3/"+course)
 ```
 
 # Usage
