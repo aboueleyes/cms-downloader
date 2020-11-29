@@ -74,7 +74,6 @@ for i in range(len(item_to_download)) :
     if os.path.isfile(item_to_download[i]+ext)   :
         print ("file already exists skipped. ")
         continue
-    # check if the item is video or not :
     command = "wget -q --show-progres  --user "+user+" --password "+password + " --no-check-certificate " + item_link
     os.system(command)
     os.rename(old_name,item_to_download[i]+ext)
