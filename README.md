@@ -48,5 +48,5 @@ $ ./cms-downloader
 Tip : you can use regular expressions in search </br>
 to select more than option press \<tab\>
 # DISCLAIMER
-This script is not official. It is simply a personal script for educational purposes only. 
+This script is not official. It is simply a personal script shared  for educational purposes only. 
 
