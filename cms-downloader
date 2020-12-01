@@ -11,6 +11,7 @@ from selenium import webdriver
 
 options = webdriver.ChromeOptions()
 options.add_argument("--headless")
+options.add_argument("ignore-certificate-errors")
 options.add_experimental_option('prefs', {
 
 "download.prompt_for_download": False, #To auto download the file
