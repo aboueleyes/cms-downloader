@@ -1,10 +1,9 @@
 # CMS-downloader
 A CLI python script that downloads the material of any course hosted on the  cms website for *UNIX-Like operating systems*
 
-# Showcase
+# Demo
 
-[![asciicast](https://asciinema.org/a/DMyCpZoJii6v7gOrT5J5B9ufA.svg)](https://asciinema.org/a/DMyCpZoJii6v7gOrT5J5B9ufA)
-
+[![asciicast](https://asciinema.org/a/Vlgtwg6TXDwlZv0YTJ7iFE7Cs.svg)](https://asciinema.org/a/Vlgtwg6TXDwlZv0YTJ7iFE7Cs)
 
 # Installation
 install dependencies for Debian-based distros
