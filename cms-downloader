@@ -76,8 +76,7 @@ for i in range(len(item_to_download)) :
     index = description.index(item_to_download[i])
     item_link = link[index]
     file_ext = item_link[-4:]
-    old_name = "G"+item_link.split('G')[1]
-
+   
     if os.path.isfile(new_name[index]+file_ext)   :
         print ("file already exists skipped. ")
         continue
