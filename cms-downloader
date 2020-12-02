@@ -6,7 +6,6 @@ import os
 from iterfzf import iterfzf 
 from selenium import webdriver
 
-
 # chromium options 
 
 options = webdriver.ChromeOptions()
@@ -55,6 +54,7 @@ for element in tqdm(download_items) :
     e = element.find_element_by_xpath("../../..")
     new_name.append(e.find_element_by_tag_name("strong").text)
     description.append(e.find_element_by_tag_name("div").text)
+
 item_to_download = iterfzf(description,multi=True)
 
 # Download each item 
