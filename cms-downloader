@@ -54,8 +54,9 @@ for element in tqdm(download_items) :
     link.append(element.get_attribute('href'))
     e = element.find_element_by_xpath("../../..")
     new_name.append(e.find_element_by_tag_name("strong").text)
-    description.append(e.find_element_by_tag_name("div").text
-item_to_download = iterfzf(description,multi=True)
+    description.append(e.find_element_by_tag_name("div").text)
+
+ item_to_download = iterfzf(description,multi=True)
 
 # Download each item 
 for i in item_to_download :
@@ -70,4 +71,3 @@ for i in item_to_download :
     command = "wget -q --show-progress  --user "+user+" --password "+password + \
     " --no-check-certificate " + "-O \"" + new_name[index]+file_ext + "\" "+ item_link
     os.system(command)
-   
