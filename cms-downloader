@@ -24,6 +24,10 @@ options.add_argument("--headless")
 options.add_argument("ignore-certificate-errors")
 driver = webdriver.Chrome(options=options)
 
+# dir of downloads change here !!
+user_home = os.environ["HOME"]
+os.chdir(user_home+"/Downloads")
+
 # username and password Change here !!
 user = ""
 password = ""
@@ -51,10 +55,11 @@ course_url = Links.get(course)
 # open the links
 driver.get(loggin_url)
 driver.get(course_url)
-
-# dir of downloads change here !!
-user_home = os.environ["HOME"]
-os.chdir(user_home+"/Downloads")
+print ("""
+    ===============
+    Fetching files :
+    ===============
+""")
 
 # scrabing download links
 download_items = driver.find_elements_by_id("download")
