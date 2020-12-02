@@ -15,7 +15,6 @@ options.add_argument("ignore-certificate-errors")
 driver = webdriver.Chrome(options=options)
 
 # username and password Change here !!
-
 user = ""
 password = ""
 
@@ -46,33 +45,28 @@ driver.get(course_url)
 user_home = os.environ["HOME"]
 os.chdir(user_home+"/Downloads")
 
-
 # scrabing download links 
 download_items = driver.find_elements_by_id("download")
-link =[""]*len(download_items)
-new_name =[""]*len(download_items)
-description =[""]*len(download_items)
-i = 0
+link = []
+new_name = []
+description = []
 for element in tqdm(download_items) :
-    link[i] = element.get_attribute('href')
+    link.append(element.get_attribute('href'))
     e = element.find_element_by_xpath("../../..")
-    new_name[i] = e.find_element_by_tag_name("strong").text
-    description[i] = e.find_element_by_tag_name("div").text
-    i+=1
+    new_name.append(e.find_element_by_tag_name("strong").text)
+    description.append(e.find_element_by_tag_name("div").text
 item_to_download = iterfzf(description,multi=True)
 
-
-
 # Download each item 
-for i in range(len(item_to_download)) :
-    index = description.index(item_to_download[i])
+for i in item_to_download :
+    index = description.index(i)
     item_link = link[index]
     file_ext = item_link[-4:]
    
     if os.path.isfile(new_name[index]+file_ext)   :
         print ("file already exists skipped. ")
         continue
-    
+        
     command = "wget -q --show-progress  --user "+user+" --password "+password + \
     " --no-check-certificate " + "-O \"" + new_name[index]+file_ext + "\" "+ item_link
     os.system(command)
