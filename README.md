@@ -24,6 +24,7 @@ $ sudo pip3 install -r requirements.txt
 ```
 You should edit cms-downloader file  according to your courses , username and password
 ```python
+courses = {"course_name" , "another_one", ...}
 Links = {
   "course_name" : "course_link"
 }
