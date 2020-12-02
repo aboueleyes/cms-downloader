@@ -18,6 +18,7 @@ options.add_experimental_option('prefs', {
     "download.directory_upgrade": True,
     "plugins.always_open_pdf_externally": True, #It will not show PDF directly in chrome
     "safebrowsing.enabled": True
+    
 })
 driver = webdriver.Chrome(options=options)
 
