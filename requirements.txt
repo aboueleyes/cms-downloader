@@ -1,3 +1,6 @@
+urllib3
 tqdm
 iterfzf
-selenium
+requests
+beautifulsoup4
+requests_nltm
