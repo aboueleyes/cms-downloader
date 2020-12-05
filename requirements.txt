@@ -3,4 +3,6 @@ tqdm
 iterfzf
 requests
 beautifulsoup4
-requests_nltm
+bs4
+HttpntlmAuth
+requests.ntlm
