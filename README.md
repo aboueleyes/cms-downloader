@@ -9,16 +9,21 @@ clone this repo
 $ git clone https://github.com/aboueleyes/cms-downloader.git
 $ cd cms-downloader/
 $ sudo pip3 install -r requirements.txt
-or for Windows  
+```
+or for Windows 
+```bash
 $ pip install -r  requirements.txt
 ```
 
 # Usage
-```bash
 for Linux :
+```bash
 $ chmod 755 ./cms-downloader.py
 $ python3 cms-downloader.py
+```
 for windows
+
+```bash
 $ python3 cms-downloader.py
 ```
 Tip : you can use regular expressions in search </br>
