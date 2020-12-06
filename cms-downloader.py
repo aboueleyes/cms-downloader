@@ -82,26 +82,33 @@ def chooseCourse():
 def getFiles():
     download_links = []
     download_names = []
+    discreption = []
     coursePage = session.get(chooseCourse(), verify=False,
                              auth=HttpNtlmAuth(username, password))
     coursePage_soup = bs(coursePage.text, 'html.parser')
     files_body = coursePage_soup.find_all(class_="card-body")
     for i in files_body:
+        discreption.append(re.sub(r'[0-9]* - (.*)',"\\1",i.find("div").text))
         download_links.append("https://cms.guc.edu.eg"+i.find('a').get("href"))
         download_names.append(
             re.sub(r'[0-9]* - (.*)', "\\1", i.find("strong").text))
-    return download_links, download_names
+
+    return download_links, download_names , discreption
 
 
 def chooseFiles():
-    download_links, download_names = getFiles()
-    items_to_download_names = iterfzf(download_names, multi=True)
+    download_links, download_names , discreption = getFiles()
+    items_to_download_names = iterfzf(discreption, multi=True)
     item_links = []
+    item_names = []
     for i in items_to_download_names :
-        index = download_names.index(i)
+        index = discreption.index(i)
         item_link = download_links[index]
+        item_name = download_names[index]
         item_links.append(item_link)
-    return item_links, items_to_download_names
+        item_names.append(item_name)
+    return item_links, item_names
+
 
 
 def downloadFiles():
