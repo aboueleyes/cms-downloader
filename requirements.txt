@@ -4,5 +4,4 @@ iterfzf
 requests
 beautifulsoup4
 bs4
-HttpntlmAuth
 requests.ntlm
