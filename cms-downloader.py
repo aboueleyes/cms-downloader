@@ -1,4 +1,3 @@
-#imports
 from tqdm import tqdm
 import os
 import re
@@ -13,7 +12,6 @@ import getpass
 # Disabling warnings
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-# Credenalites
 if not os.path.isfile(".credenalites") :
     username = input("Enter your username : ")
     password = getpass.getpass(prompt="Enter Your Password : ")
@@ -27,7 +25,6 @@ else :
     password=lines[1].strip()
     f.close()
 
-# Starting the session (logging in the CMS website)
 session = requests.Session()
 homePage = session.get("https://cms.guc.edu.eg/",
                        verify=False, auth=HttpNtlmAuth(username, password))
