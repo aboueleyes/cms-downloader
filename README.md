@@ -1,10 +1,6 @@
 # CMS-downloader
 A CLI python script that downloads the material of any course hosted on the  cms website
 
-# Demo
-
-[![asciicast](https://asciinema.org/a/HMtz6iPZT384PAqnDPiT6TkRz.svg)](https://asciinema.org/a/HMtz6iPZT384PAqnDPiT6TkRz)
-
 # Installation
 clone this repo 
 ```bash
