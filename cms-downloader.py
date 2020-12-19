@@ -107,27 +107,26 @@ def chooseFiles():
     return item_links, item_names
 
 
-
 def downloadFiles():
     files_download_links, file_names = chooseFiles()
     for i in range(len(files_download_links)):
         url = files_download_links[i]
         file_ext = url[-4:]
         file_name = file_names[i]+file_ext
-        if os.path.isfile(file_name) :
-            print ("file already exists skipped")
+        if os.path.isfile(file_name):
+            print("file already exists skipped")
             continue
-        if url[-1] == 'v' or url[-1] == '4' :
-            print("waiting , Be patient..")
-        r = requests.get(url, auth=HttpNtlmAuth(username, password),verify=False)
-        total_size_in_bytes= int(r.headers.get('content-length', 0))
-        progress_bar = tqdm(total=total_size_in_bytes, unit='iB', unit_scale=True)
-        if r.status_code == 200:
-            with open(file_name, 'wb') as out:
-                print("Downloading "+file_name)
-                for bits in r.iter_content() :
-                    progress_bar.update(len(bits))
-                    out.write(bits)
-                progress_bar.close()
+        r = requests.get(url, auth=HttpNtlmAuth(
+            username, password), verify=False, stream=True,allow_redirects=True)
+        total_size = int(r.headers.get('content-length'))
+        initial_pos = 0
+        with open(file_name, 'wb')  as f:
+            with tqdm(total=total_size, unit="B", 
+               unit_scale=True, desc=file_name,initial=initial_pos, ascii=True) as pbar:
+                for chunk in r.iter_content(chunk_size=1024) :
+                    if chunk :
+                        f.write(chunk)
+                        pbar.update(len(chunk))
+
 
 downloadFiles()                
