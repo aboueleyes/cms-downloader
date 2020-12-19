@@ -14,13 +14,6 @@ $ pip install -r  requirements.txt
 ```
 
 # Usage
-for Linux :
-```bash
-$ chmod 755 ./cms-downloader.py
-$ python3 cms-downloader.py
-```
-for windows
-
 ```bash
 $ python3 cms-downloader.py
 ```
