@@ -95,6 +95,9 @@ def getFiles():
 
 def chooseFiles():
     download_links, download_names , discreption = getFiles()
+    zipped = zip (discreption,download_links,download_names)
+    zipped = sorted(zipped)
+    discreption, download_links, download_names = zip(*zipped)
     items_to_download_names = iterfzf(discreption, multi=True)
     item_links = []
     item_names = []
