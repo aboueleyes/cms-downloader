@@ -1,3 +1,4 @@
+#imports
 from tqdm import tqdm
 import os
 import re
@@ -9,26 +10,31 @@ import urllib3
 import urllib.request
 import json
 import getpass
+
+
 # Disabling warnings
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-if not os.path.isfile(".credenalites") :
+# Credenalites
+if not os.path.isfile(".credenalites"):
     username = input("Enter your username : ")
     password = getpass.getpass(prompt="Enter Your Password : ")
-    f  = open(".credenalites","w")
+    f = open(".credenalites", "w")
     f.write(username+"\n"+password)
     f.close()
-else :
-    f  = open(".credenalites","r")
-    lines=f.readlines()
-    username=lines[0].strip()
-    password=lines[1].strip()
+else:
+    f = open(".credenalites", "r")
+    lines = f.readlines()
+    username = lines[0].strip()
+    password = lines[1].strip()
     f.close()
 
+# Starting the session (logging in the CMS website)
 session = requests.Session()
 homePage = session.get("https://cms.guc.edu.eg/",
                        verify=False, auth=HttpNtlmAuth(username, password))
 homePage_soup = bs(homePage.text, 'html.parser')
+
 
 def getCoursesName():
     coursesTable = list(homePage_soup.find('table', {
@@ -44,7 +50,7 @@ def getAvaliableCourses():
     print("[-] Fetching Courses")
     course_links = []
     link_tags = homePage_soup('a')
-    for i,link_tag in enumerate(link_tags):
+    for i, link_tag in enumerate(link_tags):
         ans = link_tag.get('href', None)
         if ans == None:
             continue
@@ -62,7 +68,7 @@ def chooseCourse():
         with open(".courses.json", "w") as outfile:
             json.dump(courses, outfile)
         os.makedirs("Downloads")
-        for dir in courses_names :
+        for dir in courses_names:
             if not os.path.exists(dir):
                 os.makedirs("Downloads/"+dir)
     with open('.courses.json') as json_file:
@@ -77,31 +83,30 @@ def chooseCourse():
 
 
 def getFiles():
-    download_links = []
-    download_names = []
-    discreption = []
+    download_links, download_names, discreption = [], [], []
     coursePage = session.get(chooseCourse(), verify=False,
                              auth=HttpNtlmAuth(username, password))
     coursePage_soup = bs(coursePage.text, 'html.parser')
     files_body = coursePage_soup.find_all(class_="card-body")
     for i in files_body:
-        discreption.append(re.sub(r'[0-9]* - (.*)',"\\1",i.find("div").text))
+        discreption.append(
+            re.sub(r'[0-9]* - (.*)', "\\1", i.find("div").text).strip())
         download_links.append("https://cms.guc.edu.eg"+i.find('a').get("href"))
         download_names.append(
-            re.sub(r'[0-9]* - (.*)', "\\1", i.find("strong").text))
+            re.sub(r'[0-9]* - (.*)', "\\1", i.find("strong").text).strip())
 
-    return download_links, download_names , discreption
+    return download_links, download_names, discreption
 
 
 def chooseFiles():
-    download_links, download_names , discreption = getFiles()
+    download_links, download_names, discreption = getFiles()
     zipped = zip (discreption,download_links,download_names)
     zipped = sorted(zipped)
     discreption, download_links, download_names = zip(*zipped)
     items_to_download_names = iterfzf(discreption, multi=True)
     item_links = []
     item_names = []
-    for i in items_to_download_names :
+    for i in items_to_download_names:
         index = discreption.index(i)
         item_link = download_links[index]
         item_name = download_names[index]
