@@ -123,13 +123,16 @@ def downloadFiles():
             username, password), verify=False, stream=True,allow_redirects=True)
         total_size = int(r.headers.get('content-length'))
         initial_pos = 0
-        with open(file_name, 'wb')  as f:
-            with tqdm(total=total_size, unit="B", 
-               unit_scale=True, desc=file_name,initial=initial_pos, ascii=True) as pbar:
-                for chunk in r.iter_content(chunk_size=1024) :
-                    if chunk :
-                        f.write(chunk)
-                        pbar.update(len(chunk))
+        if r.status_code == 200 :
+            with open(file_name, 'wb')  as f:
+                with tqdm(total=total_size, unit="B", 
+                   unit_scale=True, desc=file_name,initial=initial_pos, ascii=True) as pbar:
+                    for chunk in r.iter_content(chunk_size=1024) :
+                        if chunk :
+                            f.write(chunk)
+                            pbar.update(len(chunk))
+        else :
+            print ("error please try again")
 
-
-downloadFiles()                
+if __name__ == "__main__":
+    downloadFiles()
