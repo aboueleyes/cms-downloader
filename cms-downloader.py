@@ -33,14 +33,19 @@ def login():
 
 
 username, password = login()
-# Starting the session (logging in the CMS website)
-def session():
+
+
+def req_session():
     session = requests.Session()
     homePage = session.get("https://cms.guc.edu.eg/",
-                    verify=False, auth=HttpNtlmAuth(username, password))
+                           verify=False, auth=HttpNtlmAuth(username, password))
     homePage_soup = bs(homePage.text, 'html.parser')
-    return homePage_soup
-homePage_soup = session()
+    return homePage_soup, session
+
+
+homePage_soup, session = req_session()
+
+
 def getCoursesName():
     coursesTable = list(homePage_soup.find('table', {
         'id': 'ContentPlaceHolderright_ContentPlaceHoldercontent_GridViewcourses'}))
