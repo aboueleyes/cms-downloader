@@ -1,16 +1,16 @@
-#imports
-from tqdm import tqdm
+# imports
+import getpass
+import json
 import os
 import re
-from iterfzf import iterfzf
-import requests
-from requests_ntlm import HttpNtlmAuth
-from bs4 import BeautifulSoup as bs
-import urllib3
 import urllib.request
-import json
-import getpass
 
+import requests
+import urllib3
+from bs4 import BeautifulSoup as bs
+from iterfzf import iterfzf
+from requests_ntlm import HttpNtlmAuth
+from tqdm import tqdm
 
 # Disabling warnings
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -100,7 +100,7 @@ def getFiles():
 
 def chooseFiles():
     download_links, download_names, discreption = getFiles()
-    zipped = zip (discreption,download_links,download_names)
+    zipped = zip(discreption, download_links, download_names)
     zipped = sorted(zipped)
     discreption, download_links, download_names = zip(*zipped)
     items_to_download_names = iterfzf(discreption, multi=True)
@@ -125,19 +125,20 @@ def downloadFiles():
             print("file already exists skipped")
             continue
         r = requests.get(url, auth=HttpNtlmAuth(
-            username, password), verify=False, stream=True,allow_redirects=True)
+            username, password), verify=False, stream=True, allow_redirects=True)
         total_size = int(r.headers.get('content-length'))
         initial_pos = 0
-        if r.status_code == 200 :
-            with open(file_name, 'wb')  as f:
-                with tqdm(total=total_size, unit="B", 
-                   unit_scale=True, desc=file_name,initial=initial_pos, ascii=True) as pbar:
-                    for chunk in r.iter_content(chunk_size=1024) :
-                        if chunk :
+        if r.status_code == 200:
+            with open(file_name, 'wb') as f:
+                with tqdm(total=total_size, unit="B",
+                          unit_scale=True, desc=file_name, initial=initial_pos, ascii=True) as pbar:
+                    for chunk in r.iter_content(chunk_size=1024):
+                        if chunk:
                             f.write(chunk)
                             pbar.update(len(chunk))
-        else :
-            print ("error please try again")
+        else:
+            print("error please try again")
+
 
 if __name__ == "__main__":
     downloadFiles()
