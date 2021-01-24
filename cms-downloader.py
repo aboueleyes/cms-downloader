@@ -15,20 +15,24 @@ from tqdm import tqdm
 # Disabling warnings
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-# Credenalites
-if not os.path.isfile(".credenalites"):
-    username = input("Enter your username : ")
-    password = getpass.getpass(prompt="Enter Your Password : ")
-    f = open(".credenalites", "w")
-    f.write(username+"\n"+password)
-    f.close()
-else:
-    f = open(".credenalites", "r")
-    lines = f.readlines()
-    username = lines[0].strip()
-    password = lines[1].strip()
-    f.close()
 
+def login():
+    if not os.path.isfile(".credenalites"):
+        username = input("Enter your username : ")
+        password = getpass.getpass(prompt="Enter Your Password : ")
+        f = open(".credenalites", "w")
+        f.write(username+"\n"+password)
+        f.close()
+    else:
+        f = open(".credenalites", "r")
+        lines = f.readlines()
+        username = lines[0].strip()
+        password = lines[1].strip()
+        f.close()
+    return username, password    
+
+
+username, password = login()
 # Starting the session (logging in the CMS website)
 session = requests.Session()
 homePage = session.get("https://cms.guc.edu.eg/",
