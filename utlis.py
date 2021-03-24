@@ -63,7 +63,7 @@ def get_avaliable_courses(home_page_soup):
             continue
         match = re.match(r'\/apps\/student\/CourseViewStn\?id(.*)', ans)
         if match:
-            course_links.append(ans)
+            course_links.append("https://cms.guc.edu.eg"+ans)
     return course_links
 
 
@@ -84,9 +84,10 @@ def choose_course(courses_names, courses_links):
         courses = dict(zip(courses_names, courses_links))
         with open(".courses.json", "w") as outfile:
             json.dump(courses, outfile)
-        os.makedirs("Downloads")
+        if not os.path.exists("Downloads"):
+            os.makedirs("Downloads")
         for directly in courses_names:
-            if not os.path.exists(directly):
+            if not os.path.exists("Downloads/"+directly):
                 os.makedirs("Downloads/"+directly)
     with open('.courses.json') as json_file:
         course_items = json.load(json_file)
@@ -99,7 +100,7 @@ def choose_course(courses_names, courses_links):
     return course_url
 
 
-def get_files(course_url, course_page_soup, username, password, session):
+def get_files(course_url, username, password, session):
     '''get filename and links and description'''
     download_links, download_names, discreption, week_name = [], [], [], []
     course_page = session.get(course_url, verify=False,
@@ -107,7 +108,7 @@ def get_files(course_url, course_page_soup, username, password, session):
     course_page_soup = bs(course_page.text, 'html.parser')
     files_body = course_page_soup.find_all(class_="card-body")
     for i in files_body:
-        week_name.append(i.parent.parent.parent.parent.parent.find('h2').text)
+        week_name.append(i.parent.parent.parent.parent.find('h2').text)
         discreption.append(
             re.sub(r'[0-9]* - (.*)', "\\1", i.find("div").text).strip())
         download_links.append("https://cms.guc.edu.eg"+i.find('a').get("href"))
@@ -116,18 +117,21 @@ def get_files(course_url, course_page_soup, username, password, session):
 
     return download_links, download_names, discreption, week_name
 
-def choose_files(download_links, download_names, discreption):
+def choose_files(download_links, download_names, discreption, week_name):
     ''' prompt the user to choose files to download '''
     items_to_download_names = iterfzf(discreption, multi=True)
     item_links = []
     item_names = []
+    week_names_chosen= []
     for i in items_to_download_names:
         index = discreption.index(i)
         item_link = download_links[index]
+        week_name_chosen = week_name[index]
         item_name = download_names[index]
         item_links.append(item_link)
         item_names.append(item_name)
-    return item_links, item_names
+        week_names_chosen.append(week_name_chosen)
+    return item_links, item_names, week_names_chosen
 
 def sanitize_files(week_name):
     ''' sanitize_files'''
@@ -139,14 +143,15 @@ def sanitize_files(week_name):
 def week_dir (week_name,course_name):
     ''' create week directories'''
     for week in week_name:
-        if not os.path.exists(f"Downloads/{course_name}/{week}"):
+        if not os.path.exists(f"{week}"):
             os.makedirs(week)
 def check_exists(file_name, week_name):
     ''' check if the file exists is the dir osr its subdir'''
     if os.path.isfile(file_name):
         return True
+        
     for directory in week_name:
-        if not os.path.exists(f"{directory}/file_name"):
+        if  os.path.isfile(f"{directory}/{file_name}"):
             return True
     return False    
     
