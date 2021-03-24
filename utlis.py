@@ -58,3 +58,36 @@ def get_avaliable_courses(home_page_soup):
         if match:
             course_links.append(ans)
     return course_links
+def get_course_names(home_page_soup):
+    '''get courses names'''
+    courses_table = list(home_page_soup.find('table', {
+        'id': 'ContentPlaceHolderright_ContentPlaceHoldercontent_GridViewcourses'}))
+    courses_name = []
+    for i in range(2, len(courses_table) - 1):
+        courses_name.append(re.sub(
+            r'\n*[\(][\|]([^\|]*)[\|][\)]([^\(]*)[\(].*\n*', '[\\1]\\2', courses_table[i].text))
+    return courses_name
+
+def choose_course(courses_name,courses_links):
+    '''promt the user to choose the string'''
+    if not os.path.isfile(".courses.json"):
+        courses = dict(zip(courses_names, courses_links))
+        with open(".courses.json", "w") as outfile:
+            json.dump(courses, outfile)
+    with open('.courses.json') as json_file:
+        links = json.load(json_file)
+    courses = []
+    for i in links:
+        courses.append(i)
+    questions = [
+        {
+            'type': 'list',
+            'name': 'size',
+            'message': 'What Course do you want?',
+            'choices': courses
+        }
+    ]
+    course = prompt(questions)
+    course = list(course.values())[0]
+    course_url = links.get(course)
+    return course_url
