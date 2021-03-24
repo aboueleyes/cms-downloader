@@ -15,7 +15,7 @@ $ pip install -r  requirements.txt
 
 # Usage
 ```bash
-$ python3 cms-downloader.py
+$ python3 main.py
 ```
 Tip : you can use regular expressions in search </br>
 to select more than option press \<tab\>
