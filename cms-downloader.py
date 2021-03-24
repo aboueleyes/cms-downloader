@@ -5,6 +5,7 @@ import os
 import re
 import urllib.request
 
+from sanitize_filename import sanitize
 import requests
 import urllib3
 from bs4 import BeautifulSoup as bs
@@ -130,7 +131,7 @@ def downloadFiles():
     for i in range(len(files_download_links)):
         url = files_download_links[i]
         file_ext = url[-4:]
-        file_name = file_names[i]+file_ext
+        file_name = sanitize(file_names[i]+file_ext)
         if os.path.isfile(file_name):
             print("file already exists skipped")
             continue
