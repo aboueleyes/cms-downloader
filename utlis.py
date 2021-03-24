@@ -1,5 +1,6 @@
 import re
 import os
+import json
 import requests
 from PyInquirer import prompt
 from requests_ntlm import HttpNtlmAuth
@@ -68,7 +69,7 @@ def get_course_names(home_page_soup):
             r'\n*[\(][\|]([^\|]*)[\|][\)]([^\(]*)[\(].*\n*', '[\\1]\\2', courses_table[i].text))
     return courses_name
 
-def choose_course(courses_name,courses_links):
+def choose_course(courses_names="",courses_links=""):
     '''promt the user to choose the string'''
     if not os.path.isfile(".courses.json"):
         courses = dict(zip(courses_names, courses_links))
