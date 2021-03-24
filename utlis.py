@@ -112,3 +112,20 @@ def get_files(course_url, course_page_soup, username, password, session):
             re.sub(r'[0-9]* - (.*)', "\\1", i.find("strong").text).strip())
 
     return download_links, download_names, discreption
+
+def choose_files(download_links, download_names, discreption):
+    ''' prompt the user to choose files to download '''
+    zipped = zip(discreption, download_links, download_names)
+    zipped = sorted(zipped)
+    discreption, download_links, download_names = zip(*zipped)
+    items_to_download_names = iterfzf(discreption, multi=True)
+    item_links = []
+    item_names = []
+    for i in items_to_download_names:
+        index = discreption.index(i)
+        item_link = download_links[index]
+        item_name = download_names[index]
+        item_links.append(item_link)
+        item_names.append(item_name)
+    return item_links, item_names
+
