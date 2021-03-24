@@ -3,6 +3,8 @@ import os
 import re
 
 import requests
+from sanitize_filename import sanitize
+from tqdm import tqdm
 from bs4 import BeautifulSoup as bs
 from iterfzf import iterfzf
 from PyInquirer import prompt
@@ -99,25 +101,23 @@ def choose_course(courses_names, courses_links):
 
 def get_files(course_url, course_page_soup, username, password, session):
     '''get filename and links and description'''
-    download_links, download_names, discreption = [], [], []
+    download_links, download_names, discreption, week_name = [], [], [], []
     course_page = session.get(course_url, verify=False,
                               auth=HttpNtlmAuth(username, password))
     course_page_soup = bs(course_page.text, 'html.parser')
     files_body = course_page_soup.find_all(class_="card-body")
     for i in files_body:
+        week_name.append(i.parent.parent.parent.parent.parent.find('h2').text)
         discreption.append(
             re.sub(r'[0-9]* - (.*)', "\\1", i.find("div").text).strip())
         download_links.append("https://cms.guc.edu.eg"+i.find('a').get("href"))
         download_names.append(
             re.sub(r'[0-9]* - (.*)', "\\1", i.find("strong").text).strip())
 
-    return download_links, download_names, discreption
+    return download_links, download_names, discreption, week_name
 
 def choose_files(download_links, download_names, discreption):
     ''' prompt the user to choose files to download '''
-    zipped = zip(discreption, download_links, download_names)
-    zipped = sorted(zipped)
-    discreption, download_links, download_names = zip(*zipped)
     items_to_download_names = iterfzf(discreption, multi=True)
     item_links = []
     item_names = []
@@ -129,3 +129,49 @@ def choose_files(download_links, download_names, discreption):
         item_names.append(item_name)
     return item_links, item_names
 
+def sanitize_files(week_name):
+    ''' sanitize_files'''
+    sanitized_week = []
+    for week in week_name:
+        sanitized_week.append(sanitize(week))
+    return sanitized_week
+
+def week_dir (week_name,course_name):
+    ''' create week directories'''
+    for week in week_name:
+        if not os.path.exists(f"Downloads/{course_name}/{week}"):
+            os.makedirs(week)
+def check_exists(file_name, week_name):
+    ''' check if the file exists is the dir osr its subdir'''
+    if os.path.isfile(file_name):
+        return True
+    for directory in week_name:
+        if not os.path.exists(f"{directory}/file_name"):
+            return True
+    return False    
+    
+def download_files (files_download_links, file_names, week_name, username, password):
+    ''' download the files'''
+    for i in range(len(files_download_links)):
+        url = files_download_links[i]
+        file_ext = url[-4:]
+        file_name = sanitize(file_names[i]+file_ext)
+        if check_exists(file_name, week_name):
+            print("file already exists skipped")
+            continue
+        os.chdir(f"{week_name[i]}")
+        r = requests.get(url, auth=HttpNtlmAuth(
+            username, password), verify=False, stream=True, allow_redirects=True)
+        total_size = int(r.headers.get('content-length'))
+        initial_pos = 0
+        if r.status_code == 200:
+            with open(file_name, 'wb') as f:
+                with tqdm(total=total_size, unit="B",
+                          unit_scale=True, desc=file_name, initial=initial_pos, ascii=True) as pbar:
+                    for chunk in r.iter_content(chunk_size=1024):
+                        if chunk:
+                            f.write(chunk)
+                            pbar.update(len(chunk))
+            os.chdir("..")
+        else:
+            os.chdir("..")
