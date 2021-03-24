@@ -3,12 +3,12 @@ import os
 import re
 
 import requests
-from sanitize_filename import sanitize
-from tqdm import tqdm
 from bs4 import BeautifulSoup as bs
 from iterfzf import iterfzf
 from PyInquirer import prompt
 from requests_ntlm import HttpNtlmAuth
+from sanitize_filename import sanitize
+from tqdm import tqdm
 
 
 def authenticate_user(username, password):
@@ -117,12 +117,13 @@ def get_files(course_url, username, password, session):
 
     return download_links, download_names, discreption, week_name
 
+
 def choose_files(download_links, download_names, discreption, week_name):
     ''' prompt the user to choose files to download '''
     items_to_download_names = iterfzf(discreption, multi=True)
     item_links = []
     item_names = []
-    week_names_chosen= []
+    week_names_chosen = []
     for i in items_to_download_names:
         index = discreption.index(i)
         item_link = download_links[index]
@@ -133,6 +134,7 @@ def choose_files(download_links, download_names, discreption, week_name):
         week_names_chosen.append(week_name_chosen)
     return item_links, item_names, week_names_chosen
 
+
 def sanitize_files(week_name):
     ''' sanitize_files'''
     sanitized_week = []
@@ -140,22 +142,26 @@ def sanitize_files(week_name):
         sanitized_week.append(sanitize(week))
     return sanitized_week
 
-def week_dir (week_name,course_name):
+
+def week_dir(week_name, course_name):
     ''' create week directories'''
     for week in week_name:
         if not os.path.exists(f"{week}"):
             os.makedirs(week)
+
+
 def check_exists(file_name, week_name):
     ''' check if the file exists is the dir osr its subdir'''
     if os.path.isfile(file_name):
         return True
-        
+
     for directory in week_name:
-        if  os.path.isfile(f"{directory}/{file_name}"):
+        if os.path.isfile(f"{directory}/{file_name}"):
             return True
-    return False    
-    
-def download_files (files_download_links, file_names, week_name, username, password):
+    return False
+
+
+def download_files(files_download_links, file_names, week_name, username, password):
     ''' download the files'''
     for i in range(len(files_download_links)):
         url = files_download_links[i]
