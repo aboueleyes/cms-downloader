@@ -1,15 +1,19 @@
-import re
-import os
 import json
+import os
+import re
+
 import requests
+from bs4 import BeautifulSoup as bs
+from iterfzf import iterfzf
 from PyInquirer import prompt
 from requests_ntlm import HttpNtlmAuth
+
 
 def authenticate_user(username, password):
     '''validate user credentials'''
     session = requests.Session()
     request_session = session.get("https://cms.guc.edu.eg/",
-                    verify=False, auth=HttpNtlmAuth(username, password))
+                                  verify=False, auth=HttpNtlmAuth(username, password))
     if request_session.status_code == 200:
         return True
     return False
@@ -59,6 +63,8 @@ def get_avaliable_courses(home_page_soup):
         if match:
             course_links.append(ans)
     return course_links
+
+
 def get_course_names(home_page_soup):
     '''get courses names'''
     courses_table = list(home_page_soup.find('table', {
@@ -69,26 +75,40 @@ def get_course_names(home_page_soup):
             r'\n*[\(][\|]([^\|]*)[\|][\)]([^\(]*)[\(].*\n*', '[\\1]\\2', courses_table[i].text))
     return courses_name
 
-def choose_course(courses_names="",courses_links=""):
-    '''promt the user to choose the string'''
+
+def choose_course(courses_names, courses_links):
+    ''' prompt the user a list to choose the link '''
     if not os.path.isfile(".courses.json"):
         courses = dict(zip(courses_names, courses_links))
         with open(".courses.json", "w") as outfile:
             json.dump(courses, outfile)
+        os.makedirs("Downloads")
+        for directly in courses_names:
+            if not os.path.exists(directly):
+                os.makedirs("Downloads/"+directly)
     with open('.courses.json') as json_file:
-        links = json.load(json_file)
+        course_items = json.load(json_file)
     courses = []
-    for i in links:
+    for i in course_items:
         courses.append(i)
-    questions = [
-        {
-            'type': 'list',
-            'name': 'size',
-            'message': 'What Course do you want?',
-            'choices': courses
-        }
-    ]
-    course = prompt(questions)
-    course = list(course.values())[0]
-    course_url = links.get(course)
+    course = iterfzf(courses)
+    os.chdir("Downloads/"+course)
+    course_url = course_items.get(course)
     return course_url
+
+
+def get_files(course_url, course_page_soup, username, password, session):
+    '''get filename and links and description'''
+    download_links, download_names, discreption = [], [], []
+    course_page = session.get(course_url, verify=False,
+                              auth=HttpNtlmAuth(username, password))
+    course_page_soup = bs(course_page.text, 'html.parser')
+    files_body = course_page_soup.find_all(class_="card-body")
+    for i in files_body:
+        discreption.append(
+            re.sub(r'[0-9]* - (.*)', "\\1", i.find("div").text).strip())
+        download_links.append("https://cms.guc.edu.eg"+i.find('a').get("href"))
+        download_names.append(
+            re.sub(r'[0-9]* - (.*)', "\\1", i.find("strong").text).strip())
+
+    return download_links, download_names, discreption
