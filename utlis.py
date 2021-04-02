@@ -165,8 +165,8 @@ def download_files(files_download_links, file_names, week_name, username, passwo
     ''' download the files'''
     for i in range(len(files_download_links)):
         url = files_download_links[i]
-        file_ext = url[-4:]
-        file_name = sanitize(file_names[i]+file_ext)
+        file_ext = str(url.rsplit('.',1)[1])
+        file_name = sanitize(file_names[i]+'.'+file_ext)
         if check_exists(file_name, week_name):
             print("file already exists skipped")
             continue
