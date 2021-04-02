@@ -172,10 +172,13 @@ def download_file(url, file_name,username, password):
                 if chunk:
                     f.write(chunk)
                     pbar.update(len(chunk))
+# def get_n_of_threads(num):
+#     return num if num < 3 else 3  
 
 def download_files(files_download_links, file_names, week_name,username,password,course):
     ''' download the files'''
     therads = []
+    # n_of_threads = get_n_of_threads(len(files_download_links))
     for i in range(len(files_download_links)):
         url = files_download_links[i]
         file_ext = str(url.rsplit('.',1)[1])
@@ -183,11 +186,10 @@ def download_files(files_download_links, file_names, week_name,username,password
         if check_exists(file_name, week_name):
             print("file already exists skipped")
             continue
-        else:
-            for i in range(min(3,len(files_download_links))):
-                processThread = threading.Thread(
-                    target=download_file, args=(url, file_name,username, password)) # parameters and functions have to be passed separately
-                processThread.start() # start the thread
-                therads.append(processThread) 
-            for t in therads:
-                t.join()
+        # for i in range(n_of_threads):  
+        processThread = threading.Thread(
+            target=download_file, args=(url, file_name,username, password)) # parameters and functions have to be passed separately
+        processThread.start() # start the thread
+        therads.append(processThread) 
+        # for t in therads:
+        #     t.join()
