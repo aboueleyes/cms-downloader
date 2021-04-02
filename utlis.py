@@ -159,7 +159,7 @@ def check_exists(file_name, week_name):
             return True
     return False
 
-def download_file(url, file_name,week_name,username, password):
+def download_file(url, file_name,username, password):
     r = requests.get(url, auth=HttpNtlmAuth(
         username, password), verify=False, stream=True, allow_redirects=True)
     total_size = int(r.headers.get('content-length'))
