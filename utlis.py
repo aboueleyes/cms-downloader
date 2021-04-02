@@ -184,7 +184,7 @@ def download_files(files_download_links, file_names, week_name,username,password
             print("file already exists skipped")
             continue
         else:
-            for i in range(3):
+            for i in range(min(3,len(files_download_links))):
                 processThread = threading.Thread(
                     target=download_file, args=(url, file_name,username, password)) # parameters and functions have to be passed separately
                 processThread.start() # start the thread
