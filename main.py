@@ -39,17 +39,16 @@ def main():
     courses_name = get_course_names(home_page_soup)
     while True:
 
-        course_url = choose_course(courses_name, course_links)
+        course_url,course= choose_course(courses_name, course_links)
         download_links, download_names, discreption, week_name = get_files(
             course_url, username, password, session)
 
         item_links, item_names, week_name = choose_files(
             download_links, download_names, discreption, week_name)
         week_name = sanitize_files(week_name)
-        week_dir(week_name, courses_name)
-        download_files(item_links, item_names, week_name, username, password)
-        time.sleep(1)
-        os.chdir("../..")
+        week_dir(week_name, course)
+        download_files(item_links, item_names, week_name, username, password,course)
+        time.sleep(3)
 
 
 if __name__ == '__main__':

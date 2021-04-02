@@ -95,9 +95,8 @@ def choose_course(courses_names, courses_links):
     for i in course_items:
         courses.append(i)
     course = iterfzf(courses)
-    os.chdir("Downloads/"+course)
     course_url = course_items.get(course)
-    return course_url
+    return course_url,course
 
 
 def get_files(course_url, username, password, session):
@@ -147,7 +146,7 @@ def week_dir(week_name, course_name):
     ''' create week directories'''
     for week in week_name:
         if not os.path.exists(f"{week}"):
-            os.makedirs(week)
+            os.makedirs(f"Downloads/{course_name}/{week}")
 
 
 def check_exists(file_name, week_name):
@@ -161,28 +160,23 @@ def check_exists(file_name, week_name):
     return False
 
 
-def download_files(files_download_links, file_names, week_name, username, password):
+def download_files(files_download_links, file_names, week_name, username, password, course):
     ''' download the files'''
     for i in range(len(files_download_links)):
         url = files_download_links[i]
         file_ext = str(url.rsplit('.',1)[1])
-        file_name = sanitize(file_names[i]+'.'+file_ext)
+        file_name = f"Downloads/{course}/{week_name[i]}/{sanitize(file_names[i]+'.'+file_ext)}"
         if check_exists(file_name, week_name):
             print("file already exists skipped")
             continue
-        os.chdir(f"{week_name[i]}")
         r = requests.get(url, auth=HttpNtlmAuth(
             username, password), verify=False, stream=True, allow_redirects=True)
         total_size = int(r.headers.get('content-length'))
         initial_pos = 0
-        if r.status_code == 200:
-            with open(file_name, 'wb') as f:
-                with tqdm(total=total_size, unit="B",
-                          unit_scale=True, desc=file_name, initial=initial_pos, ascii=True) as pbar:
-                    for chunk in r.iter_content(chunk_size=1024):
-                        if chunk:
-                            f.write(chunk)
-                            pbar.update(len(chunk))
-            os.chdir("..")
-        else:
-            os.chdir("..")
+        with open(file_name, 'wb') as f:
+            with tqdm(total=total_size, unit="B",
+                      unit_scale=True, desc=file_name, initial=initial_pos, ascii=True) as pbar:
+                for chunk in r.iter_content(chunk_size=1024):
+                    if chunk:
+                        f.write(chunk)
+                        pbar.update(len(chunk))
