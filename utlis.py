@@ -1,6 +1,7 @@
 import json
 import os
 import re
+import threading
 
 import requests
 from bs4 import BeautifulSoup as bs
@@ -171,8 +172,10 @@ def download_file(url, file_name,username, password):
                 if chunk:
                     f.write(chunk)
                     pbar.update(len(chunk))
+
 def download_files(files_download_links, file_names, week_name,username,password,course):
     ''' download the files'''
+    therads = []
     for i in range(len(files_download_links)):
         url = files_download_links[i]
         file_ext = str(url.rsplit('.',1)[1])
@@ -181,4 +184,10 @@ def download_files(files_download_links, file_names, week_name,username,password
             print("file already exists skipped")
             continue
         else:
-            download_file(url, file_name,username, password)
+            for i in range(3):
+                processThread = threading.Thread(
+                    target=download_file, args=(url, file_name,username, password)) # parameters and functions have to be passed separately
+                processThread.start() # start the thread
+                therads.append(processThread) 
+            for t in therads:
+                t.join()
