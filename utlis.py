@@ -145,7 +145,7 @@ def sanitize_files(week_name):
 def week_dir(week_name, course_name):
     ''' create week directories'''
     for week in week_name:
-        if not os.path.exists(f"{week}"):
+        if not os.path.exists(f"Downloads/{course_name}/{week}"):
             os.makedirs(f"Downloads/{course_name}/{week}")
 
 
