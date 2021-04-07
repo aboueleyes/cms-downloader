@@ -1,0 +1,5 @@
+.coure*
+.env
+LICENSE
+__pycache__
+tags
