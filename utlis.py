@@ -11,7 +11,6 @@ from requests_ntlm import HttpNtlmAuth
 from sanitize_filename import sanitize
 from tqdm import tqdm
 
-
 def authenticate_user(username, password):
     '''validate user credentials'''
     session = requests.Session()
@@ -29,7 +28,6 @@ def get_credinalities():
         lines = file_env.readlines()
         user_name = lines[0].strip()
         pass_word = lines[1].strip()
-        authenticate_user(user_name, pass_word)
         file_env.close()
     except:
         questions = [
@@ -47,7 +45,6 @@ def get_credinalities():
         cred = prompt(questions)
         user_name = list(cred.values())[0]
         pass_word = list(cred.values())[1]
-        authenticate_user(user_name, pass_word)
         file_env = open(".env", "w")
         file_env.write(user_name+"\n"+str(pass_word))
         file_env.close()
