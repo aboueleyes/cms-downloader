@@ -8,7 +8,6 @@ import threading
 import requests
 from bs4 import BeautifulSoup as bs
 from iterfzf import iterfzf
-from PyInquirer import prompt
 from requests_ntlm import HttpNtlmAuth
 from sanitize_filename import sanitize
 from tqdm import tqdm
