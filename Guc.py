@@ -14,13 +14,9 @@ class DownloadFile:
         self.course = ''
         self.path = ''
 
-    def set_ext(self):
+    def noramlize(self):
         self.ext = '.' + self.url.rsplit('.', 1)[1]
-
-    def set_week(self):
         self.week = sanitize(self.week)
-
-    def set_path(self):
         self.path = f'Downloads/{self.course}/{self.week}/{sanitize({self.name + self.ext})}'
 
 

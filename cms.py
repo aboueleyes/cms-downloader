@@ -140,9 +140,7 @@ def download_file(file_to_download, username, password):
 def download_files(files_to_download, username, password):
     therads = []
     for i in range(len(files_to_download)):
-        files_to_download[i].set_ext()
-        files_to_download[i].set_week()
-        files_to_download[i].set_path()
+        files_to_download[i].noramlize()
         if check_exists(files_to_download[i].path):
             print("Already exisis")
             continue

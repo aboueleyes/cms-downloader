@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 import sys
+import os 
+import requests
+from bs4 import BeautifulSoup as bs
+from requests_ntlm import HttpNtlmAuth
 import time
 from signal import SIGINT, signal
 
 import urllib3
 
-from cms import *
+from cms import get_avaliable_courses, get_course_names, download_files, choose_files, choose_course, get_files, get_credinalities, authenticate_user
 
 # from rich import print
 # from rich.console import Console
-
 
 
 def handler(signal_received, frame):
@@ -46,6 +49,8 @@ def main():
         item.course = course
     files_to_download.make_weeks()
     download_files(files_to_download.list, username, password)
+
+
 if __name__ == "__main__":
     signal(SIGINT, handler)
     main()
