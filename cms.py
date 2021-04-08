@@ -66,25 +66,20 @@ def get_course_names(home_page_soup):
             r'\n*[\(][\|]([^\|]*)[\|][\)]([^\(]*)[\(].*\n*', '[\\1]\\2', courses_table[i].text))
     return courses_name
 
-
+def make_courses_dir(courses_names):
+    if not os.path.exists("Downloads"):
+        os.makedirs("Downloads")
+    for dir in courses_names:
+        if not os.path.exists("Downloads/"+dir):
+            os.makedirs("Downloads/"+dir)
 def choose_course(courses_names, courses_links):
     ''' prompt the user a list to choose the link '''
-    if not os.path.isfile(".courses.json"):
-        courses = dict(zip(courses_names, courses_links))
-        with open(".courses.json", "w") as outfile:
-            json.dump(courses, outfile)
-        if not os.path.exists("Downloads"):
-            os.makedirs("Downloads")
-        for directly in courses_names:
-            if not os.path.exists("Downloads/"+directly):
-                os.makedirs("Downloads/"+directly)
-    with open('.courses.json') as json_file:
-        course_items = json.load(json_file)
+    courses_dict = dict(zip(courses_names, courses_links))
     courses = []
-    for i in course_items:
+    for i in courses_dict:
         courses.append(i)
     course = iterfzf(courses)
-    course_url = course_items.get(course)
+    course_url = courses_dict.get(course)
     return course_url, course
 
 

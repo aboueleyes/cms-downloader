@@ -8,7 +8,6 @@ import urllib3
 from cms import *
 
 
-
 def handler(signal_received, frame):
     # Handle any cleanup here
     print('\nSIGINT or CTRL-C detected. Exiting gracefully')
@@ -33,7 +32,7 @@ def main():
 
     course_links = get_avaliable_courses(home_page_soup)
     courses_name = get_course_names(home_page_soup)
-
+    make_courses_dir(courses_name)
     course_url, course = choose_course(courses_name, course_links)
 
     files = get_files(course_url, username, password, session)
