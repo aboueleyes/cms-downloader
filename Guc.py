@@ -5,12 +5,12 @@ from sanitize_filename import sanitize
 
 class DownloadFile:
 
-    def __init__(self):
-        self.name = ''
-        self.url = ''
+    def __init__(self,name,url,discreption,week):
+        self.name = name
+        self.url = url
         self.ext = ''
-        self.discreption = ''
-        self.week = ''
+        self.discreption = discreption
+        self.week = week
         self.course = ''
         self.path = ''
 

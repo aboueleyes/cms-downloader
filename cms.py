@@ -38,7 +38,6 @@ def get_credinalities():
         file_env = open(".env", "w")
         file_env.write(f"{cred[0]}\n{cred[1]}")
         file_env.close()
-        # TODO remove PyInquirer and retrun tuple, improve code
     return cred
 
 
@@ -66,12 +65,15 @@ def get_course_names(home_page_soup):
             r'\n*[\(][\|]([^\|]*)[\|][\)]([^\(]*)[\(].*\n*', '[\\1]\\2', courses_table[i].text))
     return courses_name
 
+
 def make_courses_dir(courses_names):
     if not os.path.exists("Downloads"):
         os.makedirs("Downloads")
     for dir in courses_names:
         if not os.path.exists("Downloads/"+dir):
             os.makedirs("Downloads/"+dir)
+
+
 def choose_course(courses_names, courses_links):
     ''' prompt the user a list to choose the link '''
     courses_dict = dict(zip(courses_names, courses_links))
@@ -92,13 +94,14 @@ def get_files(course_url, username, password, session):
     course_page_soup = bs(course_page.text, 'html.parser')
     files_body = course_page_soup.find_all(class_="card-body")
     for j, i in enumerate(files_body):
-        files.list.append(DownloadFile())
-        files.list[j].url = ("https://cms.guc.edu.eg"+i.find('a').get("href"))
-        files.list[j].week = i.parent.parent.parent.parent.find('h2').text
-        files.list[j].discreption = re.sub(
+        url = "https://cms.guc.edu.eg"+i.find('a').get("href")
+        week = i.parent.parent.parent.parent.find('h2').text
+        discreption = re.sub(
             r'[0-9]* - (.*)', "\\1", i.find("div").text)
-        files.list[j].name = re.sub(
+        name = re.sub(
             r'[0-9]* - (.*)', "\\1", i.find("strong").text)
+        files.list.append(DownloadFile(name,url,discreption
+        ,week))
     return files
 
 
@@ -106,10 +109,10 @@ def choose_files(downloadfiles):
     items_to_download_names = iterfzf(
         downloadfiles.get_discrepitions(), multi=True)
     files_to_download = DownloadList()
-    for i in range(len(downloadfiles.list)):
-        for j in range(len(items_to_download_names)):
-            if downloadfiles.list[i].discreption == items_to_download_names[j]:
-                files_to_download.list.append(downloadfiles.list[i])
+    for item in downloadfiles.list:
+        for name in items_to_download_names:
+            if item.discreption == name:
+                files_to_download.list.append(item)
     return files_to_download
 
 
