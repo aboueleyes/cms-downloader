@@ -2,3 +2,6 @@ Downloads
 __pycache__
 README.md
 tags
+.env
+.cou*
+*.vim

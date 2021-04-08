@@ -11,7 +11,7 @@ from PyInquirer import prompt
 from requests_ntlm import HttpNtlmAuth
 from sanitize_filename import sanitize
 from tqdm import tqdm
-from CmsFile import DownloadFile, DownloadList
+from Guc import DownloadFile, DownloadList
 
 
 def authenticate_user(username, password):
@@ -108,23 +108,54 @@ def get_files(course_url, username, password, session):
                               auth=HttpNtlmAuth(username, password))
     course_page_soup = bs(course_page.text, 'html.parser')
     files_body = course_page_soup.find_all(class_="card-body")
-    for i in files_body:
-        files.list[i] = DownloadFile()
-        files.list[i].week = i.parent.parent.parent.parent.find('h2').text
-        files.list[i].discreption = r'[0-9]* - (.*)', "\\1", i.find("div").text
-        files.list[i].name = r'[0-9]* - (.*)', "\\1", i.find("strong").text
-    return files.list
+    for j,i in enumerate(files_body):
+        files.list.append(DownloadFile())
+        files.list[j].url = ("https://cms.guc.edu.eg"+i.find('a').get("href"))
+        files.list[j].week = i.parent.parent.parent.parent.find('h2').text
+        files.list[j].discreption = re.sub(r'[0-9]* - (.*)', "\\1", i.find("div").text)
+        files.list[j].name = re.sub(r'[0-9]* - (.*)', "\\1", i.find("strong").text)
+    return files
 
 
 def choose_files(downloadfiles):
     items_to_download_names = iterfzf(
         downloadfiles.get_discrepitions(), multi=True)
     files_to_download = DownloadList()
-    for i in downloadfiles:
-        for j in items_to_download_names :
-            if downloadfiles.list[i].name == items_to_download_names[j]:
-                files_to_download.list.append(downloadfiles[i])
+    for i in range(len(downloadfiles.list)):
+        for j in range(len(items_to_download_names)):
+            if downloadfiles.list[i].discreption == items_to_download_names[j]:
+                files_to_download.list.append(downloadfiles.list[i])
     return files_to_download
 
+
 def check_exists(file_to_download):
-    return os.path.isfile(file_to_download.path)
+    return os.path.isfile(file_to_download)
+
+
+def download_file(file_to_download, username, password):
+    r = requests.get(file_to_download.url, auth=HttpNtlmAuth(
+        username, password), verify=False, stream=True, allow_redirects=True)
+    total_size = int(r.headers.get('content-length'))
+    initial_pos = 0
+    with open(file_to_download.path, 'wb') as f:
+        with tqdm(total=total_size, unit="B",
+                  unit_scale=True, desc=file_to_download.name, initial=initial_pos, ascii=True) as pbar:
+            for chunk in r.iter_content(chunk_size=1024):
+                if chunk:
+                    f.write(chunk)
+                    pbar.update(len(chunk))
+
+def download_files(files_to_download,username,password):
+    therads = []
+    # print(item.name for item in files_to_download)
+    for i in range(len(files_to_download)):
+        files_to_download[i].set_ext()
+        files_to_download[i].set_week()
+        files_to_download[i].set_path()
+        if check_exists(files_to_download[i].path):
+            print("Already exisis")
+            continue
+        processThread = threading.Thread(
+            target=download_file, args=(files_to_download[i],username, password)) # parameters and functions have to be passed separately
+        processThread.start() # start the thread
+        therads.append(processThread) 
