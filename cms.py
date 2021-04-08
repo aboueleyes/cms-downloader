@@ -137,10 +137,11 @@ def download_file(file_to_download, username, password):
 
 def download_files(files_to_download, username, password, pdf=False):
     therads = []
+    exts = ['.pdf','.pptx']
     for file in files_to_download:
         file.noramlize()
         if pdf: 
-            if not file.ext  == '.pdf':
+            if not file.ext in exts:
                 continue
         if check_exists(file.path):
             continue
