@@ -16,6 +16,8 @@ $ pip install -r  requirements.txt
 # Usage
 ```bash
 $ python3 main.py
+> ./main.py -p  # install all pdf files for all courses 
+> ./main.py -a # install all files including videos for all courses
 ```
 Tip : you can use regular expressions in search </br>
 to select more than option press \<tab\>
