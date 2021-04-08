@@ -14,11 +14,13 @@ from tqdm import tqdm
 
 from Guc import DownloadFile, DownloadList
 
+HOST = 'https://cms.guc.edu.eg'
+
 
 def authenticate_user(username, password):
     '''validate user credentials'''
     session = requests.Session()
-    request_session = session.get("https://cms.guc.edu.eg/",
+    request_session = session.get(HOST,
                                   verify=False, auth=HttpNtlmAuth(username, password))
     if request_session.status_code == 200:
         return True
@@ -51,7 +53,7 @@ def get_avaliable_courses(home_page_soup):
             continue
         match = re.match(r'\/apps\/student\/CourseViewStn\?id(.*)', ans)
         if match:
-            course_links.append("https://cms.guc.edu.eg"+ans)
+            course_links.append(HOST+ans)
     return course_links
 
 
@@ -93,8 +95,8 @@ def get_files(course_url, username, password, session):
                               auth=HttpNtlmAuth(username, password))
     course_page_soup = bs(course_page.text, 'html.parser')
     files_body = course_page_soup.find_all(class_="card-body")
-    for j, i in enumerate(files_body):
-        url = "https://cms.guc.edu.eg"+i.find('a').get("href")
+    for i in files_body:
+        url = HOST+i.find('a').get("href")
         week = i.parent.parent.parent.parent.find('h2').text
         discreption = re.sub(
             r'[0-9]* - (.*)', "\\1", i.find("div").text)
@@ -126,19 +128,21 @@ def download_file(file_to_download, username, password):
     initial_pos = 0
     with open(file_to_download.path, 'wb') as f:
         with tqdm(total=total_size, unit="B",
-                  unit_scale=True, desc=file_to_download.name, initial=initial_pos, ascii=True) as pbar:
+                  unit_scale=True, desc=file_to_download.name, initial=initial_pos, colour='#FF0000', dynamic_ncols=True) as pbar:
             for chunk in r.iter_content(chunk_size=1024):
                 if chunk:
                     f.write(chunk)
                     pbar.update(len(chunk))
 
 
-def download_files(files_to_download, username, password):
+def download_files(files_to_download, username, password, pdf=False):
     therads = []
     for file in files_to_download:
         file.noramlize()
+        if pdf: 
+            if not file.ext  == '.pdf':
+                continue
         if check_exists(file.path):
-            print("Already exisis")
             continue
         processThread = threading.Thread(
             target=download_file, args=(file, username, password))  # parameters and functions have to be passed separately

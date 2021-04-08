@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 import sys
 import time
+import argparse
 from signal import SIGINT, signal
+
 
 import urllib3
 
@@ -15,6 +17,12 @@ def handler(signal_received, frame):
 
 
 def main():
+
+    praser = argparse.ArgumentParser(prog='cms-downloader',description=''' 
+        Download Material from CMS website
+    ''')
+    praser.add_argument('-p','--pdf', help='doownload all pdf files',action='store_true',default=False)
+    args = praser.parse_args()
 
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     username, password = get_credinalities()
@@ -33,15 +41,23 @@ def main():
     course_links = get_avaliable_courses(home_page_soup)
     courses_name = get_course_names(home_page_soup)
     make_courses_dir(courses_name)
-    course_url, course = choose_course(courses_name, course_links)
+    if args.pdf:
+        for index,course in enumerate(course_links):
+            files = get_files(course,username,password,session)
+            for item in files.list:
+                item.course = courses_name[index]
+            files.make_weeks()
+            download_files(files.list,username,password,pdf=True)
+    else:
+        course_url, course = choose_course(courses_name, course_links)
 
-    files = get_files(course_url, username, password, session)
-    files_to_download = choose_files(files)
+        files = get_files(course_url, username, password, session)
+        files_to_download = choose_files(files)
 
-    for item in files_to_download.list:
-        item.course = course
-    files_to_download.make_weeks()
-    download_files(files_to_download.list, username, password)
+        for item in files_to_download.list:
+            item.course = course
+        files_to_download.make_weeks()
+        download_files(files_to_download.list, username, password)
 
 
 if __name__ == "__main__":

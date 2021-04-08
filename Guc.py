@@ -16,7 +16,7 @@ class DownloadFile:
     def noramlize(self):
         self.ext = '.' + self.url.rsplit('.', 1)[1]
         self.week = sanitize(self.week)
-        self.path = f'Downloads/{self.course}/{self.week}/{sanitize({self.name + self.ext})}'
+        self.path = f'Downloads/{self.course}/{self.week}/{sanitize(self.name)+sanitize(self.ext)}'
 
 
 class DownloadList:
