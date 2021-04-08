@@ -1,18 +1,12 @@
 #!/usr/bin/env python3
 import sys
-import os 
-import requests
-from bs4 import BeautifulSoup as bs
-from requests_ntlm import HttpNtlmAuth
 import time
 from signal import SIGINT, signal
 
 import urllib3
 
-from cms import get_avaliable_courses, get_course_names, download_files, choose_files, choose_course, get_files, get_credinalities, authenticate_user
+from cms import *
 
-# from rich import print
-# from rich.console import Console
 
 
 def handler(signal_received, frame):
