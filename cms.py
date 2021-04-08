@@ -100,8 +100,7 @@ def get_files(course_url, username, password, session):
             r'[0-9]* - (.*)', "\\1", i.find("div").text)
         name = re.sub(
             r'[0-9]* - (.*)', "\\1", i.find("strong").text)
-        files.list.append(DownloadFile(name,url,discreption
-        ,week))
+        files.list.append(DownloadFile(name, url, discreption, week))
     return files
 
 
@@ -136,12 +135,12 @@ def download_file(file_to_download, username, password):
 
 def download_files(files_to_download, username, password):
     therads = []
-    for i in range(len(files_to_download)):
-        files_to_download[i].noramlize()
-        if check_exists(files_to_download[i].path):
+    for file in files_to_download:
+        file.noramlize()
+        if check_exists(file.path):
             print("Already exisis")
             continue
         processThread = threading.Thread(
-            target=download_file, args=(files_to_download[i], username, password))  # parameters and functions have to be passed separately
+            target=download_file, args=(file, username, password))  # parameters and functions have to be passed separately
         processThread.start()  # start the thread
         therads.append(processThread)

@@ -5,14 +5,13 @@ from sanitize_filename import sanitize
 
 class DownloadFile:
 
-    def __init__(self,name,url,discreption,week):
+    def __init__(self, name, url, discreption, week):
         self.name = name
         self.url = url
         self.ext = ''
         self.discreption = discreption
         self.week = week
         self.course = ''
-        self.path = ''
 
     def noramlize(self):
         self.ext = '.' + self.url.rsplit('.', 1)[1]
