@@ -1,9 +1,10 @@
 
+import getpass
 import json
 import os
 import re
 import threading
-import getpass 
+
 import requests
 from bs4 import BeautifulSoup as bs
 from iterfzf import iterfzf
@@ -11,6 +12,7 @@ from PyInquirer import prompt
 from requests_ntlm import HttpNtlmAuth
 from sanitize_filename import sanitize
 from tqdm import tqdm
+
 from Guc import DownloadFile, DownloadList
 
 
@@ -29,14 +31,15 @@ def get_credinalities():
     try:
         file_env = open(".env", "r")
         lines = file_env.readlines()
-        cred = (lines[0].strip(),lines[1].strip())
+        cred = (lines[0].strip(), lines[1].strip())
         file_env.close()
     except:
-        cred = (input("Enter Your GUC username :  "),getpass.getpass(prompt="Enter Your GUC Password : "))
+        cred = (input("Enter Your GUC username :  "),
+                getpass.getpass(prompt="Enter Your GUC Password : "))
         file_env = open(".env", "w")
         file_env.write(f"{cred[0]}\n{cred[1]}")
         file_env.close()
-        # TODO remove PyInquirer and retrun tuple, improve code 
+        # TODO remove PyInquirer and retrun tuple, improve code
     return cred
 
 
@@ -94,12 +97,14 @@ def get_files(course_url, username, password, session):
                               auth=HttpNtlmAuth(username, password))
     course_page_soup = bs(course_page.text, 'html.parser')
     files_body = course_page_soup.find_all(class_="card-body")
-    for j,i in enumerate(files_body):
+    for j, i in enumerate(files_body):
         files.list.append(DownloadFile())
         files.list[j].url = ("https://cms.guc.edu.eg"+i.find('a').get("href"))
         files.list[j].week = i.parent.parent.parent.parent.find('h2').text
-        files.list[j].discreption = re.sub(r'[0-9]* - (.*)', "\\1", i.find("div").text)
-        files.list[j].name = re.sub(r'[0-9]* - (.*)', "\\1", i.find("strong").text)
+        files.list[j].discreption = re.sub(
+            r'[0-9]* - (.*)', "\\1", i.find("div").text)
+        files.list[j].name = re.sub(
+            r'[0-9]* - (.*)', "\\1", i.find("strong").text)
     return files
 
 
@@ -131,7 +136,8 @@ def download_file(file_to_download, username, password):
                     f.write(chunk)
                     pbar.update(len(chunk))
 
-def download_files(files_to_download,username,password):
+
+def download_files(files_to_download, username, password):
     therads = []
     for i in range(len(files_to_download)):
         files_to_download[i].set_ext()
@@ -141,6 +147,6 @@ def download_files(files_to_download,username,password):
             print("Already exisis")
             continue
         processThread = threading.Thread(
-            target=download_file, args=(files_to_download[i],username, password)) # parameters and functions have to be passed separately
-        processThread.start() # start the thread
-        therads.append(processThread) 
+            target=download_file, args=(files_to_download[i], username, password))  # parameters and functions have to be passed separately
+        processThread.start()  # start the thread
+        therads.append(processThread)

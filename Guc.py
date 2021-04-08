@@ -1,5 +1,7 @@
-from sanitize_filename import sanitize
 import os
+
+from sanitize_filename import sanitize
+
 
 class DownloadFile:
 
@@ -13,14 +15,15 @@ class DownloadFile:
         self.path = ''
 
     def set_ext(self):
-        self.ext = '.' + self.url.rsplit('.',1)[1] 
+        self.ext = '.' + self.url.rsplit('.', 1)[1]
 
-    
     def set_week(self):
         self.week = sanitize(self.week)
 
     def set_path(self):
         self.path = f'Downloads/{self.course}/{self.week}/{sanitize({self.name + self.ext})}'
+
+
 class DownloadList:
     def __init__(self):
         self.list = []
@@ -35,7 +38,7 @@ class DownloadList:
         return [item.week for item in self.list]
 
     def make_weeks(self):
-        
+
         for item in self.list:
             if not os.path.exists(f"Downloads/{item.course}/{sanitize(item.week)}"):
                 os.makedirs(f"Downloads/{item.course}/{sanitize(item.week)}")
