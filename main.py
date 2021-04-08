@@ -22,6 +22,7 @@ def main():
         Download Material from CMS website
     ''')
     praser.add_argument('-p','--pdf', help='doownload all pdf files',action='store_true',default=False)
+    praser.add_argument('-a','--all', help='doownload all files',action='store_true',default=False)
     args = praser.parse_args()
 
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -41,13 +42,16 @@ def main():
     course_links = get_avaliable_courses(home_page_soup)
     courses_name = get_course_names(home_page_soup)
     make_courses_dir(courses_name)
-    if args.pdf:
+    if args.pdf or args.all:
         for index,course in enumerate(course_links):
             files = get_files(course,username,password,session)
             for item in files.list:
                 item.course = courses_name[index]
             files.make_weeks()
-            download_files(files.list,username,password,pdf=True)
+            if args.all:
+                download_files(files.list,username,password)
+            else:
+                download_files(files.list,username,password,pdf=True)
     else:
         course_url, course = choose_course(courses_name, course_links)
 
