@@ -3,7 +3,7 @@ import json
 import os
 import re
 import threading
-
+import getpass 
 import requests
 from bs4 import BeautifulSoup as bs
 from iterfzf import iterfzf
@@ -29,29 +29,15 @@ def get_credinalities():
     try:
         file_env = open(".env", "r")
         lines = file_env.readlines()
-        user_name = lines[0].strip()
-        pass_word = lines[1].strip()
+        cred = (lines[0].strip(),lines[1].strip())
         file_env.close()
     except:
-        questions = [
-            {
-                'type': 'input',
-                'name': 'username',
-                'message': 'Enter your GUC username:',
-            },
-            {
-                'type': 'password',
-                'message': 'Enter your GUC password:',
-                'name': 'password'
-            }
-        ]
-        cred = prompt(questions)
-        user_name = list(cred.values())[0]
-        pass_word = list(cred.values())[1]
+        cred = (input("Enter Your GUC username :  "),getpass.getpass(prompt="Enter Your GUC Password : "))
         file_env = open(".env", "w")
-        file_env.write(user_name+"\n"+str(pass_word))
+        file_env.write(f"{cred[0]}\n{cred[1]}")
         file_env.close()
-    return user_name, pass_word
+        # TODO remove PyInquirer and retrun tuple, improve code 
+    return cred
 
 
 def get_avaliable_courses(home_page_soup):
@@ -147,7 +133,6 @@ def download_file(file_to_download, username, password):
 
 def download_files(files_to_download,username,password):
     therads = []
-    # print(item.name for item in files_to_download)
     for i in range(len(files_to_download)):
         files_to_download[i].set_ext()
         files_to_download[i].set_week()
