@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
+import argparse
 import sys
 import time
-import argparse
 from signal import SIGINT, signal
-
 
 import urllib3
 
@@ -18,11 +17,16 @@ def handler(signal_received, frame):
 
 def main():
 
-    praser = argparse.ArgumentParser(prog='cms-downloader',description=''' 
+    praser = argparse.ArgumentParser(prog='cms-downloader', description=''' 
         Download Material from CMS website
     ''')
-    praser.add_argument('-p','--pdf', help='doownload all pdf files',action='store_true',default=False)
-    praser.add_argument('-a','--all', help='doownload all files',action='store_true',default=False)
+    praser.add_argument('-p', '--pdf', help='download all pdf files',
+                        action='store_true', default=False)
+    praser.add_argument('-a', '--all', help='download all files',
+                        action='store_true', default=False)
+    praser.add_argument('-f', '--filter', help='display only new files',
+                        action='store_true', default=False)
+
     args = praser.parse_args()
 
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -43,21 +47,26 @@ def main():
     courses_name = get_course_names(home_page_soup)
     make_courses_dir(courses_name)
     if args.pdf or args.all:
-        for index,course in enumerate(course_links):
-            files = get_files(course,username,password,session)
+        for index, course in enumerate(course_links):
+            files = get_files(course, username, password, session)
             for item in files.list:
                 item.course = courses_name[index]
             files.make_weeks()
             if args.all:
-                download_files(files.list,username,password)
+                download_files(files.list, username, password)
             else:
-                download_files(files.list,username,password,pdf=True)
+                download_files(files.list, username, password, pdf=True)
     else:
         course_url, course = choose_course(courses_name, course_links)
 
         files = get_files(course_url, username, password, session)
-        files_to_download = choose_files(files)
-
+        if args.filter:
+            already_downloaded = get_downloded_items(course)
+            filtered = filter_downloads(files, already_downloaded)
+            files_to_display = get_display_items(files, filtered)
+            files_to_download = choose_files(files_to_display)
+        else:
+            files_to_download = choose_files(files)
         for item in files_to_download.list:
             item.course = course
         files_to_download.make_weeks()

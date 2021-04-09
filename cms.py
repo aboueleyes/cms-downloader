@@ -2,6 +2,7 @@
 import getpass
 import json
 import os
+import sys
 import re
 import threading
 
@@ -106,7 +107,35 @@ def get_files(course_url, username, password, session):
     return files
 
 
+def get_downloded_items(course):
+    names = []
+    for dir in os.listdir(f'Downloads/{course}'):
+        names.append(os.listdir(f'Downloads/{course}/{dir}'))
+    flat_names = [item for sublist in names for item in sublist]
+    return [item.rsplit('.',1)[0] for item in flat_names]
+
+
+def filter_downloads(whole_files, downloaded_files):
+    return diff(whole_files.get_names(), downloaded_files)
+
+def diff(lst1, lst2):
+    lst3 = [item for item in lst1 if item not in lst2]
+    return lst3
+  
+
+def get_display_items(whole_files, names):
+    items = DownloadList()
+    for i in whole_files.list:
+        for j in names:
+            if i.name == j:
+                items.list.append(i)
+    return items
+
+
 def choose_files(downloadfiles):
+    if not downloadfiles:
+        print("NO FILES YET")
+        sys.exit(0)
     items_to_download_names = iterfzf(
         downloadfiles.get_discrepitions(), multi=True)
     files_to_download = DownloadList()
@@ -137,10 +166,10 @@ def download_file(file_to_download, username, password):
 
 def download_files(files_to_download, username, password, pdf=False):
     therads = []
-    exts = ['.pdf','.pptx']
+    exts = ['.pdf', '.pptx']
     for file in files_to_download:
         file.noramlize()
-        if pdf: 
+        if pdf:
             if not file.ext in exts:
                 continue
         if check_exists(file.path):
