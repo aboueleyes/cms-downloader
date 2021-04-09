@@ -113,7 +113,10 @@ def get_downloded_items(course):
     '''list the already downloaded items'''
     names = []
     for dir in os.listdir(f'Downloads/{course}'):
-        names.append(os.listdir(f'Downloads/{course}/{dir}'))
+        if os.path.isdir(dir):
+            names.append(os.listdir(f'Downloads/{course}/{dir}'))
+        else:
+            continue    
     flat_names = [item for sublist in names for item in sublist]
     return [item.rsplit('.', 1)[0] for item in flat_names]
 
