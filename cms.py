@@ -1,6 +1,7 @@
-
+'''functions to scrape cms-downloader'''
 import getpass
 import json
+import random
 import os
 import sys
 import re
@@ -70,6 +71,7 @@ def get_course_names(home_page_soup):
 
 
 def make_courses_dir(courses_names):
+    '''make Directories for each course'''
     if not os.path.exists("Downloads"):
         os.makedirs("Downloads")
     for dir in courses_names:
@@ -108,22 +110,26 @@ def get_files(course_url, username, password, session):
 
 
 def get_downloded_items(course):
+    '''list the already downloaded items'''
     names = []
     for dir in os.listdir(f'Downloads/{course}'):
         names.append(os.listdir(f'Downloads/{course}/{dir}'))
     flat_names = [item for sublist in names for item in sublist]
-    return [item.rsplit('.',1)[0] for item in flat_names]
+    return [item.rsplit('.', 1)[0] for item in flat_names]
 
 
 def filter_downloads(whole_files, downloaded_files):
+    '''filter the downloads'''
     return diff(whole_files.get_names(), downloaded_files)
 
+
 def diff(lst1, lst2):
-    lst3 = [item for item in lst1 if item not in lst2]
-    return lst3
-  
+    '''get the diff of two lists'''
+    return [item for item in lst1 if item not in lst2]
+
 
 def get_display_items(whole_files, names):
+    '''get the items whose names will be displayed'''
     items = DownloadList()
     for i in whole_files.list:
         for j in names:
@@ -133,6 +139,7 @@ def get_display_items(whole_files, names):
 
 
 def choose_files(downloadfiles):
+    '''prompt the user to choose files'''
     if not downloadfiles:
         print("NO FILES YET")
         sys.exit(0)
@@ -147,17 +154,23 @@ def choose_files(downloadfiles):
 
 
 def check_exists(file_to_download):
+    '''check if file already exists'''
     return os.path.isfile(file_to_download)
 
-
+def get_random_color():
+    colors = ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#00FFFF', '#800000', '#FF1493',
+              '#F0FFFF', '#D2691E', '#9400D3', '#7FFFD4', '#66CDAA', '#FF6347', '#000080']
+    return random.choice(colors)
 def download_file(file_to_download, username, password):
+    '''download a file'''
     r = requests.get(file_to_download.url, auth=HttpNtlmAuth(
         username, password), verify=False, stream=True, allow_redirects=True)
     total_size = int(r.headers.get('content-length'))
     initial_pos = 0
     with open(file_to_download.path, 'wb') as f:
         with tqdm(total=total_size, unit="B",
-                  unit_scale=True, desc=file_to_download.name, initial=initial_pos, colour='#FF0000', dynamic_ncols=True) as pbar:
+                  unit_scale=True, desc=file_to_download.name,
+                  initial=initial_pos, colour=color, dynamic_ncols=True) as pbar:
             for chunk in r.iter_content(chunk_size=1024):
                 if chunk:
                     f.write(chunk)
@@ -165,6 +178,7 @@ def download_file(file_to_download, username, password):
 
 
 def download_files(files_to_download, username, password, pdf=False):
+    '''multitherad download files'''
     therads = []
     exts = ['.pdf', '.pptx']
     for file in files_to_download:
@@ -174,7 +188,7 @@ def download_files(files_to_download, username, password, pdf=False):
                 continue
         if check_exists(file.path):
             continue
-        processThread = threading.Thread(
-            target=download_file, args=(file, username, password))  # parameters and functions have to be passed separately
-        processThread.start()  # start the thread
-        therads.append(processThread)
+        process_thread = threading.Thread(
+            target=download_file, args=(file, username, password))
+        process_thread.start()  # start the thread
+        therads.append(process_thread)
