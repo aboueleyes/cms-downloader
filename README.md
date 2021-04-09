@@ -16,7 +16,7 @@ $ pip install -r  requirements.txt
 # Usage
 ```bash
 $ python3 main.py
-> ./min.py -h # show help and exit 
+> ./main.py -h # show help and exit 
 > ./main.py -p  # downliad all pdf files for all courses 
 > ./main.py -a # download all files including videos for all courses
 ```
