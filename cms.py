@@ -113,7 +113,7 @@ def get_downloded_items(course):
     '''list the already downloaded items'''
     names = []
     for dir in os.listdir(f'Downloads/{course}'):
-        if os.path.isdir(dir):
+        if os.path.isdir(f"Downloads/{course}/{dir}"):
             names.append(os.listdir(f'Downloads/{course}/{dir}'))
         else:
             continue    
