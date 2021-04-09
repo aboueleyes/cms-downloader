@@ -61,6 +61,8 @@ def main():
 
         files = get_files(course_url, username, password, session)
         files.make_weeks()
+        for item in files:
+            item.course = course
         if args.filter:
             already_downloaded = get_downloded_items(course)
             filtered = filter_downloads(files, already_downloaded)
@@ -68,8 +70,6 @@ def main():
             files_to_download = choose_files(files_to_display)
         else:
             files_to_download = choose_files(files)
-        for item in files_to_download.list:
-            item.course = course
         download_files(files_to_download.list, username, password)
 
 
