@@ -19,6 +19,7 @@ $ python3 main.py
 > ./main.py -h # show help and exit 
 > ./main.py -p  # downliad all pdf files for all courses 
 > ./main.py -a # download all files including videos for all courses
+> ./main.py -f # display new items only
 ```
 Tip : you can use regular expressions in search </br>
 to select more than option press \<tab\>
