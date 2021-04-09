@@ -60,9 +60,9 @@ def main():
         course_url, course = choose_course(courses_name, course_links)
 
         files = get_files(course_url, username, password, session)
-        files.make_weeks()
         for item in files.list:
             item.course = course
+        files.make_weeks()
         if args.filter:
             already_downloaded = get_downloded_items(course)
             filtered = filter_downloads(files, already_downloaded)
