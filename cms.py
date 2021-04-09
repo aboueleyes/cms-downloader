@@ -157,12 +157,16 @@ def check_exists(file_to_download):
     '''check if file already exists'''
     return os.path.isfile(file_to_download)
 
+
 def get_random_color():
     colors = ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#00FFFF', '#800000', '#FF1493',
               '#F0FFFF', '#D2691E', '#9400D3', '#7FFFD4', '#66CDAA', '#FF6347', '#000080']
     return random.choice(colors)
+
+
 def download_file(file_to_download, username, password):
     '''download a file'''
+    color = get_random_color()
     r = requests.get(file_to_download.url, auth=HttpNtlmAuth(
         username, password), verify=False, stream=True, allow_redirects=True)
     total_size = int(r.headers.get('content-length'))
