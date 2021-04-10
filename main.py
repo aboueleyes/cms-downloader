@@ -58,7 +58,11 @@ def main():
                 download_files(files.list, username, password, pdf=True)
     else:
         course_url, course = choose_course(courses_name, course_links)
-
+         # print(item forcitem in get_announcments(get_course_soup(course_url, username, password, session)))
+        for item in get_announcments(get_course_soup(course_url, username, password, session)):
+            print(item,end=" ")
+        print()
+        sys.exit(0)
         files = get_files(course_url, username, password, session)
         for item in files.list:
             item.course = course
