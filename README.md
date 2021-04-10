@@ -17,9 +17,10 @@ $ pip install -r  requirements.txt
 ```bash
 $ python3 main.py
 > ./main.py -h # show help and exit 
-> ./main.py -p  # downliad all pdf files for all courses 
+> ./main.py -p  # download all pdf files for all courses 
 > ./main.py -a # download all files including videos for all courses
 > ./main.py -f # display new items only
+> ./main.py -n # display announcements
 ```
 Tip : you can use regular expressions in search </br>
 to select more than option press \<tab\>

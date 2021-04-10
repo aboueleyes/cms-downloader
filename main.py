@@ -26,7 +26,8 @@ def main():
                         action='store_true', default=False)
     praser.add_argument('-f', '--filter', help='display only new files',
                         action='store_true', default=False)
-    praser.add_argument('-n','--new',help='display annoencment of the course',action='store_true',default=False)
+    praser.add_argument('-n', '--new', help='display annoencment of the course',
+                        action='store_true', default=False)
     args = praser.parse_args()
 
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -59,8 +60,10 @@ def main():
     else:
         course_url, course = choose_course(courses_name, course_links)
         if args.new:
-            for item in get_announcments(get_course_soup(course_url, username, password, session)):
-                print(item,end=" ")
+            annoencments = get_announcments(get_course_soup(
+                course_url, username, password, session))
+            for item in annoencments:
+                print(item, end=" ")
             print()
             sys.exit(0)
         files = get_files(course_url, username, password, session)

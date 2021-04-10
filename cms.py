@@ -8,7 +8,7 @@ import sys
 import threading
 
 import requests
-from bs4 import BeautifulSoup as bs 
+from bs4 import BeautifulSoup as bs
 from iterfzf import iterfzf
 from requests_ntlm import HttpNtlmAuth
 from sanitize_filename import sanitize
@@ -89,17 +89,19 @@ def choose_course(courses_names, courses_links):
     course_url = courses_dict.get(course)
     return course_url, course
 
-def get_course_soup(course_url,username,password,session):
+
+def get_course_soup(course_url, username, password, session):
     '''get course html for given course'''
     course_page = session.get(course_url, verify=False,
                               auth=HttpNtlmAuth(username, password))
     course_page_soup = bs(course_page.text, 'html.parser')
     return course_page_soup
 
+
 def get_files(course_url, username, password, session):
     '''get filename link and description'''
     files = DownloadList()
-    course_page_soup = get_course_soup(course_url,username,password,session)
+    course_page_soup = get_course_soup(course_url, username, password, session)
     files_body = course_page_soup.find_all(class_="card-body")
     for i in files_body:
         url = HOST+i.find('a').get("href")
@@ -111,13 +113,13 @@ def get_files(course_url, username, password, session):
         files.list.append(DownloadFile(name, url, discreption, week))
     return files
 
-def get_announcments(course_page_soup):
-    announcment_section = course_page_soup.find('div', class_='row')
-    title = announcment_section.find('h5').text
-    announcments = announcment_section.find_all('p')
 
-    announcments_text = [announcment.text for announcment in announcments]
-    return announcments_text
+def get_announcments(course_page_soup):
+    '''get course announcments'''
+    announcment_section = course_page_soup.find('div', class_='row')
+    announcments = announcment_section.find_all('p')
+    return [announcment.text for announcment in announcments]
+
 
 def get_downloded_items(course):
     '''list the already downloaded items'''
@@ -126,7 +128,7 @@ def get_downloded_items(course):
         if os.path.isdir(f"Downloads/{course}/{dir}"):
             names.append(os.listdir(f'Downloads/{course}/{dir}'))
         else:
-            continue    
+            continue
     flat_names = [item for sublist in names for item in sublist]
     return [item.rsplit('.', 1)[0] for item in flat_names]
 
