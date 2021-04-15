@@ -3,18 +3,30 @@ import argparse
 import sys
 import time
 from signal import SIGINT, signal
-
+from rich import print
 import urllib3
+from rich.panel import Panel
+from rich.console import Console
 
-from cms import *
+from cms import get_announcments,HOST, get_avaliable_courses, get_course_names, get_credinalities, os, requests, authenticate_user,bs, make_courses_dir, download_file, choose_course, get_course_soup, choose_files, get_display_items, download_files, filter_downloads, get_files, get_downloded_items, get_files, HttpNtlmAuth
 
 
 def handler(signal_received, frame):
     # Handle any cleanup here
-    print('\nSIGINT or CTRL-C detected. Exiting gracefully')
+    print('\n[red][bold]SIGINT or CTRL-C detected. Exiting[/bold][/red]') 
     sys.exit(0)
 
-
+def print_annoencemnt(course, username, password, course_url, session):
+    annoencments = get_announcments(get_course_soup(
+        course_url, username, password, session))
+    console = Console()
+    console.print(f'[bold][red]{course}[/red][/bold]\n',justify='center')
+    to_print = ''
+    for item in annoencments:
+        if item == '':
+            continue
+        to_print += item.strip()
+        console.print(item.strip(),justify='center')
 def main():
 
     praser = argparse.ArgumentParser(prog='cms-downloader', description=''' 
@@ -30,8 +42,11 @@ def main():
                         action='store_true', default=False)
     args = praser.parse_args()
 
+    # Disable warnings because SSL 
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
     username, password = get_credinalities()
+    
     if authenticate_user(username, password):
         print("[+] Authorized")
     else:
@@ -40,14 +55,20 @@ def main():
         sys.exit(1)
 
     session = requests.Session()
-    home_page = session.get("https://cms.guc.edu.eg/",
+    home_page = session.get(HOST,
                             verify=False, auth=HttpNtlmAuth(username, password))
     home_page_soup = bs(home_page.text, 'html.parser')
 
     course_links = get_avaliable_courses(home_page_soup)
     courses_name = get_course_names(home_page_soup)
     make_courses_dir(courses_name)
+ 
     if args.pdf or args.all:
+        if args.new:
+            for index, course_url in enumerate(course_links):
+                print_annoencemnt(courses_name[index], username, password,course_url, session)
+                print()
+            sys.exit(0)
         for index, course in enumerate(course_links):
             files = get_files(course, username, password, session)
             for item in files.list:
@@ -60,13 +81,8 @@ def main():
     else:
         course_url, course = choose_course(courses_name, course_links)
         if args.new:
-            annoencments = get_announcments(get_course_soup(
-                course_url, username, password, session))
-            for item in annoencments:
-                print(item, end=" ")
-            print()
+            print_annoencemnt(course, username, password, course_url, session)
             sys.exit(0)
-        files = get_files(course_url, username, password, session)
         for item in files.list:
             item.course = course
         files.make_weeks()

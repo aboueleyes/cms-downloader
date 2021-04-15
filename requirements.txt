@@ -6,3 +6,4 @@ beautifulsoup4
 bs4
 requests.ntlm
 sanitize_filename
+rich 
