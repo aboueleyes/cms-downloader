@@ -1,32 +1,40 @@
 #!/usr/bin/env python3
 import argparse
 import sys
-import time
 from signal import SIGINT, signal
-from rich import print
+
 import urllib3
-from rich.panel import Panel
+from rich import print
 from rich.console import Console
 
-from cms import get_announcments,HOST, get_avaliable_courses, get_course_names, get_credinalities, os, requests, authenticate_user,bs, make_courses_dir, download_file, choose_course, get_course_soup, choose_files, get_display_items, download_files, filter_downloads, get_files, get_downloded_items, get_files, HttpNtlmAuth
+from cms import (HOST, HttpNtlmAuth, authenticate_user, bs, choose_course,
+                 choose_files, download_files, filter_downloads,
+                 get_announcments, get_avaliable_courses, get_course_names,
+                 get_course_soup, get_credinalities, get_display_items,
+                 get_downloded_items, get_files, make_courses_dir, os,
+                 requests)
 
 
 def handler(signal_received, frame):
     # Handle any cleanup here
-    print('\n[red][bold]SIGINT or CTRL-C detected. Exiting[/bold][/red]') 
+    print('\n[red][bold]SIGINT or CTRL-C detected. Exiting[/bold][/red]')
     sys.exit(0)
 
+
 def print_annoencemnt(course, username, password, course_url, session):
+    '''print the annoencment'''
     annoencments = get_announcments(get_course_soup(
         course_url, username, password, session))
     console = Console()
-    console.print(f'[bold][red]{course}[/red][/bold]\n',justify='center')
+    console.print(f'[bold][red]{course}[/red][/bold]\n', justify='center')
     to_print = ''
     for item in annoencments:
         if item == '':
             continue
         to_print += item.strip()
-        console.print(item.strip(),justify='center')
+        console.print(item.strip(), justify='center')
+
+
 def main():
 
     praser = argparse.ArgumentParser(prog='cms-downloader', description=''' 
@@ -42,11 +50,11 @@ def main():
                         action='store_true', default=False)
     args = praser.parse_args()
 
-    # Disable warnings because SSL 
+    # Disable warnings because SSL
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
     username, password = get_credinalities()
-    
+
     if authenticate_user(username, password):
         print("[+] Authorized")
     else:
@@ -62,11 +70,12 @@ def main():
     course_links = get_avaliable_courses(home_page_soup)
     courses_name = get_course_names(home_page_soup)
     make_courses_dir(courses_name)
- 
+
     if args.pdf or args.all:
         if args.new:
             for index, course_url in enumerate(course_links):
-                print_annoencemnt(courses_name[index], username, password,course_url, session)
+                print_annoencemnt(
+                    courses_name[index], username, password, course_url, session)
                 print()
             sys.exit(0)
         for index, course in enumerate(course_links):
@@ -83,6 +92,7 @@ def main():
         if args.new:
             print_annoencemnt(course, username, password, course_url, session)
             sys.exit(0)
+        files = get_files(course_url, username, password, session)
         for item in files.list:
             item.course = course
         files.make_weeks()

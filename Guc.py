@@ -4,7 +4,6 @@ from sanitize_filename import sanitize
 
 
 class DownloadFile:
-
     def __init__(self, name, url, discreption, week):
         self.name = name
         self.url = url
@@ -33,7 +32,6 @@ class DownloadList:
         return [item.week for item in self.list]
 
     def make_weeks(self):
-
         for item in self.list:
             if not os.path.exists(f"Downloads/{item.course}/{sanitize(item.week)}"):
                 os.makedirs(f"Downloads/{item.course}/{sanitize(item.week)}")

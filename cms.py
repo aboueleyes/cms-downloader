@@ -1,6 +1,5 @@
 '''functions to scrape cms-downloader'''
 import getpass
-import json
 import os
 import random
 import re
@@ -11,7 +10,6 @@ import requests
 from bs4 import BeautifulSoup as bs
 from iterfzf import iterfzf
 from requests_ntlm import HttpNtlmAuth
-from sanitize_filename import sanitize
 from tqdm import tqdm
 
 from Guc import DownloadFile, DownloadList
@@ -74,9 +72,9 @@ def make_courses_dir(courses_names):
     '''make Directories for each course'''
     if not os.path.exists("Downloads"):
         os.makedirs("Downloads")
-    for dir in courses_names:
-        if not os.path.exists("Downloads/"+dir):
-            os.makedirs("Downloads/"+dir)
+    for directorty in courses_names:
+        if not os.path.exists("Downloads/"+directorty):
+            os.makedirs("Downloads/"+directorty)
 
 
 def choose_course(courses_names, courses_links):
@@ -124,9 +122,9 @@ def get_announcments(course_page_soup):
 def get_downloded_items(course):
     '''list the already downloaded items'''
     names = []
-    for dir in os.listdir(f'Downloads/{course}'):
-        if os.path.isdir(f"Downloads/{course}/{dir}"):
-            names.append(os.listdir(f'Downloads/{course}/{dir}'))
+    for directorty in os.listdir(f'Downloads/{course}'):
+        if os.path.isdir(f"Downloads/{course}/{directorty}"):
+            names.append(os.listdir(f'Downloads/{course}/{directorty}'))
         else:
             continue
     flat_names = [item for sublist in names for item in sublist]
@@ -182,25 +180,27 @@ def get_random_color():
 
 def download_file(file_to_download, username, password):
     '''download a file'''
+    
     color = get_random_color()
-    r = requests.get(file_to_download.url, auth=HttpNtlmAuth(
+    response = requests.get(file_to_download.url, auth=HttpNtlmAuth(
         username, password), verify=False, stream=True, allow_redirects=True)
-    total_size = int(r.headers.get('content-length'))
+    total_size = int(response.headers.get('content-length'))
     initial_pos = 0
-    with open(file_to_download.path, 'wb') as f:
+
+    with open(file_to_download.path, 'wb') as downloading:
         with tqdm(total=total_size, unit="B",
                   unit_scale=True, desc=file_to_download.name,
                   initial=initial_pos, colour=color, dynamic_ncols=True) as pbar:
-            for chunk in r.iter_content(chunk_size=1024):
+            for chunk in response.iter_content(chunk_size=1024):
                 if chunk:
-                    f.write(chunk)
+                    downloading.write(chunk)
                     pbar.update(len(chunk))
 
 
 def download_files(files_to_download, username, password, pdf=False):
     '''multitherad download files'''
     therads = []
-    exts = ['.pdf', '.pptx']
+    exts = ['.pdf', '.pptx', 'zip']
     for file in files_to_download:
         file.noramlize()
         if pdf:
