@@ -15,6 +15,10 @@ pip install -r  requirements.txt
 ```
 
 ## Usage
+For GUI students run this command first 
+```bash
+sed -i 's/^# //' src/constanst.py
+```
 Run in interactive mode
 ```bash
 python3 main.py
