@@ -16,7 +16,7 @@ from cms import (HOST, HttpNtlmAuth, authenticate_user, bs, choose_course,
                  requests)
 
 
-def handler(_,__):
+def handler(_, __):
     """Handle SIGINT signals"""
     r_print('\n[red][bold]SIGINT or CTRL-C detected. Exiting[/bold][/red]')
     sys.exit(0)
@@ -36,7 +36,6 @@ def print_announcement(course, username, password, course_url, session):
             continue
         console.print(item.strip(), justify='center')
     print()
-
 
 
 if __name__ == "__main__":

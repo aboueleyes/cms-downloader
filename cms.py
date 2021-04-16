@@ -1,4 +1,4 @@
-"""functions to scrape cms-downloader"""
+"""functions to scrape cms-downloader."""
 import getpass
 import os
 import random
@@ -18,7 +18,7 @@ HOST = 'https://cms.guc.edu.eg'
 
 
 def authenticate_user(username, password):
-    """validate user credentials"""
+    """validate user credentials."""
     session = requests.Session()
     request_session = session.get(HOST,
                                   verify=False, auth=HttpNtlmAuth(username, password))
@@ -26,7 +26,7 @@ def authenticate_user(username, password):
 
 
 def get_cardinalities():
-    """login to cms website"""
+    """login to cms website."""
     try:
         with open(".env", "r") as file_env:
             lines = file_env.readlines()
@@ -40,7 +40,7 @@ def get_cardinalities():
 
 
 def get_links(links_tags):
-    """remove null objects"""
+    """remove null objects."""
     return [link.get('href') for link in links_tags if link.get('href') is not None]
 
 

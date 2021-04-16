@@ -9,6 +9,7 @@ DOWNLOADS_DIR = 'Downloads'
 class DownloadFile:
     """[A File dataType]
     """
+
     def __init__(self, name, url, discreption, week):
         """[Constructor]
 
