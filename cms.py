@@ -15,6 +15,7 @@ from tqdm import tqdm
 from Guc import DownloadFile, DownloadList
 
 HOST = 'https://cms.guc.edu.eg'
+DOWNLOADS_DIR = 'Downloads'
 
 
 def authenticate_user(username, password):
@@ -46,12 +47,13 @@ def get_avaliable_courses(home_page_soup):
     course_links = []
     link_tags = home_page_soup('a')
     for link_tag in link_tags:
-        ans = link_tag.get('href', None)
-        if ans is None:
+        course_link = link_tag.get('href', None)
+        if course_link is None:
             continue
-        match = re.match(r'\/apps\/student\/CourseViewStn\?id(.*)', ans)
+        match = re.match(
+            r'\/apps\/student\/CourseViewStn\?id(.*)', course_link)
         if match:
-            course_links.append(HOST+ans)
+            course_links.append(HOST+course_link)
     return course_links
 
 
@@ -68,11 +70,11 @@ def get_course_names(home_page_soup):
 
 def make_courses_dir(courses_names):
     '''make Directories for each course'''
-    if not os.path.exists("Downloads"):
-        os.makedirs("Downloads")
+    if not os.path.exists(DOWNLOADS_DIR):
+        os.makedirs(DOWNLOADS_DIR)
     for directorty in courses_names:
-        if not os.path.exists("Downloads/"+directorty):
-            os.makedirs("Downloads/"+directorty)
+        if not os.path.exists(f'{DOWNLOADS_DIR}/{directorty}'):
+            os.makedirs(f'{DOWNLOADS_DIR}/{directorty}')
 
 
 def choose_course(courses_names, courses_links):
@@ -120,9 +122,9 @@ def get_announcments(course_page_soup):
 def get_downloded_items(course):
     '''list the already downloaded items'''
     names = []
-    for directorty in os.listdir(f'Downloads/{course}'):
-        if os.path.isdir(f"Downloads/{course}/{directorty}"):
-            names.append(os.listdir(f'Downloads/{course}/{directorty}'))
+    for directorty in os.listdir(f'{DOWNLOADS_DIR}/{course}'):
+        if os.path.isdir(f"{DOWNLOADS_DIR}/{course}/{directorty}"):
+            names.append(os.listdir(f'{DOWNLOADS_DIR}/{course}/{directorty}'))
         else:
             continue
     flat_names = [item for sublist in names for item in sublist]
