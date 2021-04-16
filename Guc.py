@@ -34,5 +34,7 @@ class DownloadList:
 
     def make_weeks(self):
         for item in self.list:
-            if not os.path.exists(f"{DOWNLOADS_DIR}/{item.course}/{sanitize(item.week)}"):
+            try:
                 os.makedirs(f"{DOWNLOADS_DIR}/{item.course}/{sanitize(item.week)}")
+            except FileExistsError: 
+                pass

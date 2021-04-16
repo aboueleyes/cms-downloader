@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
+'''A Python Script to download material from cms-website'''
 import argparse
 import sys
 from signal import SIGINT, signal
 
 import urllib3
-from rich import print
+from rich import print as r_print
 from rich.console import Console
 
 from cms import (HOST, HttpNtlmAuth, authenticate_user, bs, choose_course,
@@ -15,9 +16,9 @@ from cms import (HOST, HttpNtlmAuth, authenticate_user, bs, choose_course,
                  requests)
 
 
-def handler(signal_received, frame):
-    # Handle any cleanup here
-    print('\n[red][bold]SIGINT or CTRL-C detected. Exiting[/bold][/red]')
+def handler(_,__):
+    '''Handle SIGINT signals'''
+    r_print('\n[red][bold]SIGINT or CTRL-C detected. Exiting[/bold][/red]')
     sys.exit(0)
 
 
@@ -26,7 +27,6 @@ def print_announcement(course, username, password, course_url, session):
     announcements = get_announcements(get_course_soup(
         course_url, username, password, session))
     console = Console()
-    to_print = ''
     if len(announcements) == 0:
         return
     console.print(f'[bold][red]{course}[/red][/bold]', justify='center')
@@ -34,16 +34,16 @@ def print_announcement(course, username, password, course_url, session):
     for item in announcements:
         if item == '':
             continue
-        to_print += item.strip()
         console.print(item.strip(), justify='center')
     print()
 
 
-def main():
 
+if __name__ == "__main__":
+    signal(SIGINT, handler)
     console = Console()
 
-    parser = argparse.ArgumentParser(prog='cms-downloader', description=''' 
+    parser = argparse.ArgumentParser(prog='cms-downloader', description='''
         Download Material from CMS website
     ''')
     parser.add_argument('-p', '--pdf', help='download all pdf files',
@@ -110,8 +110,3 @@ def main():
         else:
             files_to_download = choose_files(files)
         download_files(files_to_download.list, username, password)
-
-
-if __name__ == "__main__":
-    signal(SIGINT, handler)
-    main()
