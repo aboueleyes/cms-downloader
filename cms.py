@@ -12,10 +12,9 @@ from iterfzf import iterfzf
 from requests_ntlm import HttpNtlmAuth
 from tqdm import tqdm
 
-from Guc import DownloadFile, DownloadList
+from Guc import DownloadFile, DownloadList, DOWNLOADS_DIR
 
 HOST = 'https://cms.guc.edu.eg'
-DOWNLOADS_DIR = 'Downloads'
 
 
 def authenticate_user(username, password):
@@ -26,19 +25,17 @@ def authenticate_user(username, password):
     return request_session.status_code == 200
 
 
-def get_credinalities():
+def get_cardinalities():
     '''login to cms website'''
     try:
-        file_env = open(".env", "r")
-        lines = file_env.readlines()
-        cred = (lines[0].strip(), lines[1].strip())
-        file_env.close()
-    except:
+        with open(".env", "r") as file_env:
+            lines = file_env.readlines()
+            cred = (lines[0].strip(), lines[1].strip())
+    except FileNotFoundError:
         cred = (input("Enter Your GUC username :  "),
                 getpass.getpass(prompt="Enter Your GUC Password : "))
-        file_env = open(".env", "w")
-        file_env.write(f"{cred[0]}\n{cred[1]}")
-        file_env.close()
+        with open(".env", "w") as file_env:
+            file_env.write(f"{cred[0]}\n{cred[1]}")
     return cred
 
 
@@ -61,20 +58,23 @@ def get_course_names(home_page_soup):
     '''get courses names'''
     courses_table = list(home_page_soup.find('table', {
         'id': 'ContentPlaceHolderright_ContentPlaceHoldercontent_GridViewcourses'}))
-    courses_name = []
-    for i in range(2, len(courses_table) - 1):
-        courses_name.append(re.sub(
-            r'\n*[\(][\|]([^\|]*)[\|][\)]([^\(]*)[\(].*\n*', '[\\1]\\2', courses_table[i].text))
-    return courses_name
+    return [
+        re.sub(
+            r'\n*[\(][\|]([^\|]*)[\|][\)]([^\(]*)[\(].*\n*',
+            '[\\1]\\2',
+            courses_table[i].text,
+        )
+        for i in range(2, len(courses_table) - 1)
+    ]
 
 
 def make_courses_dir(courses_names):
     '''make Directories for each course'''
     if not os.path.exists(DOWNLOADS_DIR):
         os.makedirs(DOWNLOADS_DIR)
-    for directorty in courses_names:
-        if not os.path.exists(f'{DOWNLOADS_DIR}/{directorty}'):
-            os.makedirs(f'{DOWNLOADS_DIR}/{directorty}')
+    for directory in courses_names:
+        if not os.path.exists(f'{DOWNLOADS_DIR}/{directory}'):
+            os.makedirs(f'{DOWNLOADS_DIR}/{directory}')
 
 
 def choose_course(courses_names, courses_links):
@@ -92,8 +92,7 @@ def get_course_soup(course_url, username, password, session):
     '''get course html for given course'''
     course_page = session.get(course_url, verify=False,
                               auth=HttpNtlmAuth(username, password))
-    course_page_soup = bs(course_page.text, 'html.parser')
-    return course_page_soup
+    return bs(course_page.text, 'html.parser')
 
 
 def get_files(course_url, username, password, session):
@@ -112,19 +111,19 @@ def get_files(course_url, username, password, session):
     return files
 
 
-def get_announcments(course_page_soup):
-    '''get course announcments'''
-    announcment_section = course_page_soup.find('div', class_='row')
-    announcments = announcment_section.find_all('p')
-    return [announcment.text for announcment in announcments]
+def get_announcements(course_page_soup):
+    '''get course announcements'''
+    announcement_section = course_page_soup.find('div', class_='row')
+    announcements = announcement_section.find_all('p')
+    return [announcement.text for announcement in announcements]
 
 
-def get_downloded_items(course):
+def get_downloaded_items(course):
     '''list the already downloaded items'''
     names = []
-    for directorty in os.listdir(f'{DOWNLOADS_DIR}/{course}'):
-        if os.path.isdir(f"{DOWNLOADS_DIR}/{course}/{directorty}"):
-            names.append(os.listdir(f'{DOWNLOADS_DIR}/{course}/{directorty}'))
+    for directory in os.listdir(f'{DOWNLOADS_DIR}/{course}'):
+        if os.path.isdir(f"{DOWNLOADS_DIR}/{course}/{directory}"):
+            names.append(os.listdir(f'{DOWNLOADS_DIR}/{course}/{directory}'))
         else:
             continue
     flat_names = [item for sublist in names for item in sublist]
@@ -157,7 +156,7 @@ def choose_files(downloadfiles):
         print("NO FILES YET")
         sys.exit(0)
     items_to_download_names = iterfzf(
-        downloadfiles.get_discrepitions(), multi=True)
+        downloadfiles.get_descriptions(), multi=True)
     files_to_download = DownloadList()
     for item in downloadfiles.list:
         for name in items_to_download_names:
@@ -202,10 +201,9 @@ def download_files(files_to_download, username, password, pdf=False):
     therads = []
     exts = ['.pdf', '.pptx', 'zip']
     for file in files_to_download:
-        file.noramlize()
-        if pdf:
-            if not file.ext in exts:
-                continue
+        file.normalize()
+        if pdf and file.ext not in exts:
+            continue
         if check_exists(file.path):
             continue
         process_thread = threading.Thread(

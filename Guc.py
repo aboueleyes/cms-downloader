@@ -2,6 +2,7 @@ import os
 
 from sanitize_filename import sanitize
 
+DOWNLOADS_DIR = 'Downloads'
 
 class DownloadFile:
     def __init__(self, name, url, discreption, week):
@@ -12,10 +13,10 @@ class DownloadFile:
         self.week = week
         self.course = ''
 
-    def noramlize(self):
+    def normalize(self):
         self.ext = '.' + self.url.rsplit('.', 1)[1]
         self.week = sanitize(self.week)
-        self.path = f'Downloads/{self.course}/{self.week}/{sanitize(self.name)+sanitize(self.ext)}'
+        self.path = f'{DOWNLOADS_DIR}/{self.course}/{self.week}/{sanitize(self.name)+sanitize(self.ext)}'
 
 
 class DownloadList:
@@ -25,7 +26,7 @@ class DownloadList:
     def get_names(self):
         return [item.name for item in self.list]
 
-    def get_discrepitions(self):
+    def get_descriptions(self):
         return [item.discreption for item in self.list]
 
     def get_week(self):
@@ -33,5 +34,5 @@ class DownloadList:
 
     def make_weeks(self):
         for item in self.list:
-            if not os.path.exists(f"Downloads/{item.course}/{sanitize(item.week)}"):
-                os.makedirs(f"Downloads/{item.course}/{sanitize(item.week)}")
+            if not os.path.exists(f"{DOWNLOADS_DIR}/{item.course}/{sanitize(item.week)}"):
+                os.makedirs(f"{DOWNLOADS_DIR}/{item.course}/{sanitize(item.week)}")

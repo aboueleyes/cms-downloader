@@ -1,5 +1,5 @@
 # CMS-downloader
-A CLI python script that autoamtes downloading  the material of any course hosted on the  cms website. also oraganizes the content in weeks.
+A CLI python script that automates downloading  the material of any course hosted on the  cms website. also organizes the content in weeks.
 
 
 

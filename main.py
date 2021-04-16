@@ -9,9 +9,9 @@ from rich.console import Console
 
 from cms import (HOST, HttpNtlmAuth, authenticate_user, bs, choose_course,
                  choose_files, download_files, filter_downloads,
-                 get_announcments, get_avaliable_courses, get_course_names,
-                 get_course_soup, get_credinalities, get_display_items,
-                 get_downloded_items, get_files, make_courses_dir, os,
+                 get_announcements, get_avaliable_courses, get_course_names,
+                 get_course_soup, get_cardinalities, get_display_items,
+                 get_downloaded_items, get_files, make_courses_dir, os,
                  requests)
 
 
@@ -21,17 +21,17 @@ def handler(signal_received, frame):
     sys.exit(0)
 
 
-def print_annoencemnt(course, username, password, course_url, session):
-    '''print the annoencment'''
-    annoencments = get_announcments(get_course_soup(
+def print_announcement(course, username, password, course_url, session):
+    '''print the announcement'''
+    announcements = get_announcements(get_course_soup(
         course_url, username, password, session))
     console = Console()
     to_print = ''
-    if len(annoencments) == 0:
+    if len(announcements) == 0:
         return
     console.print(f'[bold][red]{course}[/red][/bold]', justify='center')
     print()
-    for item in annoencments:
+    for item in announcements:
         if item == '':
             continue
         to_print += item.strip()
@@ -52,14 +52,14 @@ def main():
                         action='store_true', default=False)
     praser.add_argument('-f', '--filter', help='display only new files',
                         action='store_true', default=False)
-    praser.add_argument('-n', '--new', help='display annoencment of the course',
+    praser.add_argument('-n', '--new', help='display announcement of the course',
                         action='store_true', default=False)
     args = praser.parse_args()
 
     # Disable warnings because SSL
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-    username, password = get_credinalities()
+    username, password = get_cardinalities()
 
     if authenticate_user(username, password):
         console.rule("[+] Authorized", style='bold green')
@@ -81,7 +81,7 @@ def main():
     if args.pdf or args.all:
         if args.new:
             for index, course_url in enumerate(course_links):
-                print_annoencemnt(
+                print_announcement(
                     courses_name[index], username, password, course_url, session)
             sys.exit(0)
         for index, course in enumerate(course_links):
@@ -96,14 +96,14 @@ def main():
     else:
         course_url, course = choose_course(courses_name, course_links)
         if args.new:
-            print_annoencemnt(course, username, password, course_url, session)
+            print_announcement(course, username, password, course_url, session)
             sys.exit(0)
         files = get_files(course_url, username, password, session)
         for item in files.list:
             item.course = course
         files.make_weeks()
         if args.filter:
-            already_downloaded = get_downloded_items(course)
+            already_downloaded = get_downloaded_items(course)
             filtered = filter_downloads(files, already_downloaded)
             files_to_display = get_display_items(files, filtered)
             files_to_download = choose_files(files_to_display)
