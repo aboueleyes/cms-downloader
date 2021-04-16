@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-'''A Python Script to download material from cms-website'''
+"""A Python Script to download material from cms-website"""
 import argparse
 import sys
 from signal import SIGINT, signal
@@ -17,7 +17,7 @@ from cms import (HOST, HttpNtlmAuth, authenticate_user, bs, choose_course,
 
 
 def handler(_,__):
-    '''Handle SIGINT signals'''
+    """Handle SIGINT signals"""
     r_print('\n[red][bold]SIGINT or CTRL-C detected. Exiting[/bold][/red]')
     sys.exit(0)
 

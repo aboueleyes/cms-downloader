@@ -1,4 +1,4 @@
-'''functions to scrape cms-downloader'''
+"""functions to scrape cms-downloader"""
 import getpass
 import os
 import random
@@ -12,13 +12,13 @@ from iterfzf import iterfzf
 from requests_ntlm import HttpNtlmAuth
 from tqdm import tqdm
 
-from Guc import DownloadFile, DownloadList, DOWNLOADS_DIR
+from guc import DownloadFile, DownloadList, DOWNLOADS_DIR
 
 HOST = 'https://cms.guc.edu.eg'
 
 
 def authenticate_user(username, password):
-    '''validate user credentials'''
+    """validate user credentials"""
     session = requests.Session()
     request_session = session.get(HOST,
                                   verify=False, auth=HttpNtlmAuth(username, password))
@@ -26,7 +26,7 @@ def authenticate_user(username, password):
 
 
 def get_cardinalities():
-    '''login to cms website'''
+    """login to cms website"""
     try:
         with open(".env", "r") as file_env:
             lines = file_env.readlines()
@@ -38,12 +38,14 @@ def get_cardinalities():
             file_env.write(f"{cred[0]}\n{cred[1]}")
     return cred
 
+
 def get_links(links_tags):
-    '''remove null objects'''
+    """remove null objects"""
     return [link.get('href') for link in links_tags if link.get('href') is not None]
 
+
 def get_avaliable_courses(home_page_soup):
-    '''fetch courses links'''
+    """fetch courses links"""
     link_tags = get_links(home_page_soup('a'))
     return [
         HOST + course_link
@@ -53,7 +55,7 @@ def get_avaliable_courses(home_page_soup):
 
 
 def get_course_names(home_page_soup):
-    '''get courses names'''
+    """get courses names"""
     courses_table = list(home_page_soup.find('table', {
         'id': 'ContentPlaceHolderright_ContentPlaceHoldercontent_GridViewcourses'}))
     return [
@@ -67,19 +69,20 @@ def get_course_names(home_page_soup):
 
 
 def make_courses_dir(courses_names):
-    '''make Directories for each course'''
+    """make Directories for each course"""
     try:
         os.makedirs(DOWNLOADS_DIR)
     except FileExistsError:
-        pass    
+        pass
     for directory in courses_names:
         try:
             os.makedirs(f'{DOWNLOADS_DIR}/{directory}')
         except FileExistsError:
             pass
 
+
 def choose_course(courses_names, courses_links):
-    ''' prompt the user a list to choose the link '''
+    """prompt the user a list to choose the link"""
     courses_dict = dict(zip(courses_names, courses_links))
     course = iterfzf(courses_dict.keys())
     course_url = courses_dict.get(course)
@@ -87,14 +90,14 @@ def choose_course(courses_names, courses_links):
 
 
 def get_course_soup(course_url, username, password, session):
-    '''get course html for given course'''
+    """get course html for given course"""
     course_page = session.get(course_url, verify=False,
                               auth=HttpNtlmAuth(username, password))
     return bs(course_page.text, 'html.parser')
 
 
 def get_files(course_url, username, password, session):
-    '''get filename link and description'''
+    """get filename link and description"""
     files = DownloadList()
     course_page_soup = get_course_soup(course_url, username, password, session)
     files_body = course_page_soup.find_all(class_="card-body")
@@ -110,13 +113,13 @@ def get_files(course_url, username, password, session):
 
 
 def get_announcements(course_page_soup):
-    '''get course announcements'''
+    """get course announcements"""
     announcements = course_page_soup.find('div', class_='row').find_all('p')
     return [announcement.text for announcement in announcements]
 
 
 def get_downloaded_items(course):
-    '''list the already downloaded items'''
+    """list the already downloaded items"""
     names = []
     for directory in os.listdir(f'{DOWNLOADS_DIR}/{course}'):
         if os.path.isdir(f"{DOWNLOADS_DIR}/{course}/{directory}"):
@@ -128,17 +131,17 @@ def get_downloaded_items(course):
 
 
 def filter_downloads(whole_files, downloaded_files):
-    '''filter the downloads'''
+    """filter the downloads"""
     return diff(whole_files.get_names(), downloaded_files)
 
 
 def diff(lst1, lst2):
-    '''get the diff of two lists'''
+    """get the diff of two lists"""
     return [item for item in lst1 if item not in lst2]
 
 
 def get_display_items(whole_files, names):
-    '''get the items whose names will be displayed'''
+    """get the items whose names will be displayed"""
     items = DownloadList()
     for i in whole_files.list:
         for j in names:
@@ -148,7 +151,7 @@ def get_display_items(whole_files, names):
 
 
 def choose_files(downloadfiles):
-    '''prompt the user to choose files'''
+    """prompt the user to choose files"""
     if not downloadfiles:
         print("NO FILES YET")
         sys.exit(0)
@@ -163,20 +166,19 @@ def choose_files(downloadfiles):
 
 
 def check_exists(file_to_download):
-    '''check if file already exists'''
+    """check if file already exists"""
     return os.path.isfile(file_to_download)
 
 
 def get_random_color():
-    '''generate random color'''
+    """generate random color"""
     colors = ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#00FFFF', '#800000', '#FF1493',
               '#F0FFFF', '#D2691E', '#9400D3', '#7FFFD4', '#66CDAA', '#FF6347', '#000080']
     return random.choice(colors)
 
 
 def download_file(file_to_download, username, password):
-    '''download a file'''
-
+    """download a file"""
     color = get_random_color()
     response = requests.get(file_to_download.url, auth=HttpNtlmAuth(
         username, password), verify=False, stream=True, allow_redirects=True)
@@ -194,7 +196,7 @@ def download_file(file_to_download, username, password):
 
 
 def download_files(files_to_download, username, password, pdf=False):
-    '''multitherad download files'''
+    """multitherad download files"""
     therads = []
     allowed_extensions = ['.pdf', '.pptx', 'zip']
     for file in files_to_download:
