@@ -26,16 +26,22 @@ def print_annoencemnt(course, username, password, course_url, session):
     annoencments = get_announcments(get_course_soup(
         course_url, username, password, session))
     console = Console()
-    console.print(f'[bold][red]{course}[/red][/bold]\n', justify='center')
     to_print = ''
+    if len(annoencments) == 0:
+        return
+    console.print(f'[bold][red]{course}[/red][/bold]', justify='center')
+    print()
     for item in annoencments:
         if item == '':
             continue
         to_print += item.strip()
         console.print(item.strip(), justify='center')
+    print()
 
 
 def main():
+
+    console = Console()
 
     praser = argparse.ArgumentParser(prog='cms-downloader', description=''' 
         Download Material from CMS website
@@ -56,9 +62,10 @@ def main():
     username, password = get_credinalities()
 
     if authenticate_user(username, password):
-        print("[+] Authorized")
+        console.rule("[+] Authorized", style='bold green')
     else:
-        print("[!] you are not authorized. review your credentials")
+        console.rule(
+            "[!] you are not authorized. review your credentials", style='bold red')
         os.remove(".env")
         sys.exit(1)
 
@@ -76,7 +83,6 @@ def main():
             for index, course_url in enumerate(course_links):
                 print_annoencemnt(
                     courses_name[index], username, password, course_url, session)
-                print()
             sys.exit(0)
         for index, course in enumerate(course_links):
             files = get_files(course, username, password, session)

@@ -22,9 +22,7 @@ def authenticate_user(username, password):
     session = requests.Session()
     request_session = session.get(HOST,
                                   verify=False, auth=HttpNtlmAuth(username, password))
-    if request_session.status_code == 200:
-        return True
-    return False
+    return request_session.status_code == 200
 
 
 def get_credinalities():
@@ -81,8 +79,8 @@ def choose_course(courses_names, courses_links):
     ''' prompt the user a list to choose the link '''
     courses_dict = dict(zip(courses_names, courses_links))
     courses = []
-    for i in courses_dict:
-        courses.append(i)
+    for course in courses_dict:
+        courses.append(course)
     course = iterfzf(courses)
     course_url = courses_dict.get(course)
     return course_url, course
@@ -180,7 +178,7 @@ def get_random_color():
 
 def download_file(file_to_download, username, password):
     '''download a file'''
-    
+
     color = get_random_color()
     response = requests.get(file_to_download.url, auth=HttpNtlmAuth(
         username, password), verify=False, stream=True, allow_redirects=True)
