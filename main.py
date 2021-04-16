@@ -43,18 +43,18 @@ def main():
 
     console = Console()
 
-    praser = argparse.ArgumentParser(prog='cms-downloader', description=''' 
+    parser = argparse.ArgumentParser(prog='cms-downloader', description=''' 
         Download Material from CMS website
     ''')
-    praser.add_argument('-p', '--pdf', help='download all pdf files',
+    parser.add_argument('-p', '--pdf', help='download all pdf files',
                         action='store_true', default=False)
-    praser.add_argument('-a', '--all', help='download all files',
+    parser.add_argument('-a', '--all', help='download all files',
                         action='store_true', default=False)
-    praser.add_argument('-f', '--filter', help='display only new files',
+    parser.add_argument('-f', '--filter', help='display only new files',
                         action='store_true', default=False)
-    praser.add_argument('-n', '--new', help='display announcement of the course',
+    parser.add_argument('-n', '--new', help='display announcement of the course',
                         action='store_true', default=False)
-    args = praser.parse_args()
+    args = parser.parse_args()
 
     # Disable warnings because SSL
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

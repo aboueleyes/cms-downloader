@@ -38,20 +38,18 @@ def get_cardinalities():
             file_env.write(f"{cred[0]}\n{cred[1]}")
     return cred
 
+def get_links(links_tags):
+    '''remove null objects'''
+    return [link.get('href') for link in links_tags if link.get('href') is not None]
 
 def get_avaliable_courses(home_page_soup):
     '''fetch courses links'''
-    course_links = []
-    link_tags = home_page_soup('a')
-    for link_tag in link_tags:
-        course_link = link_tag.get('href', None)
-        if course_link is None:
-            continue
-        match = re.match(
-            r'\/apps\/student\/CourseViewStn\?id(.*)', course_link)
-        if match:
-            course_links.append(HOST+course_link)
-    return course_links
+    link_tags = get_links(home_page_soup('a'))
+    return [
+        HOST + course_link
+        for course_link in link_tags
+        if re.match(r'\/apps\/student\/CourseViewStn\?id(.*)', course_link)
+    ]
 
 
 def get_course_names(home_page_soup):
@@ -70,20 +68,20 @@ def get_course_names(home_page_soup):
 
 def make_courses_dir(courses_names):
     '''make Directories for each course'''
-    if not os.path.exists(DOWNLOADS_DIR):
+    try:
         os.makedirs(DOWNLOADS_DIR)
+    except FileExistsError:
+        pass    
     for directory in courses_names:
-        if not os.path.exists(f'{DOWNLOADS_DIR}/{directory}'):
+        try:
             os.makedirs(f'{DOWNLOADS_DIR}/{directory}')
-
+        except FileExistsError:
+            pass
 
 def choose_course(courses_names, courses_links):
     ''' prompt the user a list to choose the link '''
     courses_dict = dict(zip(courses_names, courses_links))
-    courses = []
-    for course in courses_dict:
-        courses.append(course)
-    course = iterfzf(courses)
+    course = iterfzf(courses_dict.keys())
     course_url = courses_dict.get(course)
     return course_url, course
 
@@ -100,21 +98,20 @@ def get_files(course_url, username, password, session):
     files = DownloadList()
     course_page_soup = get_course_soup(course_url, username, password, session)
     files_body = course_page_soup.find_all(class_="card-body")
-    for i in files_body:
-        url = HOST+i.find('a').get("href")
-        week = i.parent.parent.parent.parent.find('h2').text
+    for item in files_body:
+        url = HOST+item.find('a').get("href")
+        week = item.parent.parent.parent.parent.find('h2').text
         discreption = re.sub(
-            r'[0-9]* - (.*)', "\\1", i.find("div").text)
+            r'[0-9]* - (.*)', "\\1", item.find("div").text)
         name = re.sub(
-            r'[0-9]* - (.*)', "\\1", i.find("strong").text)
+            r'[0-9]* - (.*)', "\\1", item.find("strong").text)
         files.list.append(DownloadFile(name, url, discreption, week))
     return files
 
 
 def get_announcements(course_page_soup):
     '''get course announcements'''
-    announcement_section = course_page_soup.find('div', class_='row')
-    announcements = announcement_section.find_all('p')
+    announcements = course_page_soup.find('div', class_='row').find_all('p')
     return [announcement.text for announcement in announcements]
 
 
@@ -199,10 +196,10 @@ def download_file(file_to_download, username, password):
 def download_files(files_to_download, username, password, pdf=False):
     '''multitherad download files'''
     therads = []
-    exts = ['.pdf', '.pptx', 'zip']
+    allowed_extensions = ['.pdf', '.pptx', 'zip']
     for file in files_to_download:
         file.normalize()
-        if pdf and file.ext not in exts:
+        if pdf and file.ext not in allowed_extensions:
             continue
         if check_exists(file.path):
             continue
