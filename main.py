@@ -8,7 +8,7 @@ import urllib3
 from rich import print as r_print
 from rich.console import Console
 
-from cms import (HOST, HttpNtlmAuth, authenticate_user, bs, choose_course,
+from src.cms import (HOST, HttpNtlmAuth, authenticate_user, bs, choose_course,
                  choose_files, download_files, filter_downloads,
                  get_announcements, get_avaliable_courses, get_course_names,
                  get_course_soup, get_cardinalities, get_display_items,
