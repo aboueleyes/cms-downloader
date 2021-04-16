@@ -6,3 +6,4 @@ tags
 .cou*
 *.vim
 *.code-workspace
+.vs*
