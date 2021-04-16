@@ -3,8 +3,7 @@ import os
 
 from sanitize_filename import sanitize
 
-DOWNLOADS_DIR = 'Downloads'
-
+from src.constants import DOWNLOADS_DIR
 
 class DownloadFile:
     """[A File dataType]
@@ -32,8 +31,7 @@ class DownloadFile:
         """
         self.ext = '.' + self.url.rsplit('.', 1)[1]
         self.week = sanitize(self.week)
-        self.path = f'{DOWNLOADS_DIR}/{self.course}/{self.week}/\
-        {sanitize(self.name)+sanitize(self.ext)}'
+        self.path = f'{DOWNLOADS_DIR}/{self.course}/{self.week}/{sanitize(self.name)+sanitize(self.ext)}'
 
 
 class DownloadList:

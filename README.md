@@ -55,4 +55,3 @@ If you would like to contribute, feel free to fork the repo, and open a PR. Howe
 
 ## DISCLAIMER
 This script is not official, It is simply a personal script shared  for educational purposes only.
-

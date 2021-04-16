@@ -12,9 +12,8 @@ from iterfzf import iterfzf
 from requests_ntlm import HttpNtlmAuth
 from tqdm import tqdm
 
-from guc import DownloadFile, DownloadList, DOWNLOADS_DIR
-
-HOST = 'https://cms.guc.edu.eg'
+from src.guc import DownloadFile, DownloadList, DOWNLOADS_DIR
+from src.constants import HOST, COURSE_REGEX, COURSE_REPALCE
 
 
 def authenticate_user(username, password):
@@ -60,9 +59,9 @@ def get_course_names(home_page_soup):
         'id': 'ContentPlaceHolderright_ContentPlaceHoldercontent_GridViewcourses'}))
     return [
         re.sub(
-            r'\n*[\(][\|]([^\|]*)[\|][\)]([^\(]*)[\(].*\n*',
-            '[\\1]\\2',
-            courses_table[i].text,
+            COURSE_REGEX,
+            COURSE_REPALCE,
+            courses_table[i].text.strip(),
         )
         for i in range(2, len(courses_table) - 1)
     ]
