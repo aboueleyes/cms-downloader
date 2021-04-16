@@ -15,9 +15,9 @@ pip install -r  requirements.txt
 ```
 
 ## Usage
-For GUI students run this command first 
+For *GUI* students run this command first 
 ```bash
-sed -i 's/^# //' src/constanst.py
+sed -i 's/^# //' src/constants.py 
 ```
 Run in interactive mode
 ```bash
