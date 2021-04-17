@@ -1,4 +1,8 @@
 # CMS-downloader
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/010dce8825674274928fce14fa819335)](https://www.codacy.com/gh/aboueleyes/cms-downloader/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=aboueleyes/cms-downloader&amp;utm_campaign=Badge_Grade)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
+
 A CLI python script that automates downloading  the material of any course hosted on the  cms website. also organizes the content in weeks.
 
 ## Installation
