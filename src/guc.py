@@ -5,6 +5,7 @@ from sanitize_filename import sanitize
 
 from src.constants import DOWNLOADS_DIR
 
+
 class DownloadFile:
     """[A File dataType]
     """

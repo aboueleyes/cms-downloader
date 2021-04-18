@@ -1,8 +1,8 @@
 """functions to scrape cms-downloader."""
 import getpass
 import os
-import random
 import re
+import secrets
 import sys
 import threading
 
@@ -12,8 +12,8 @@ from iterfzf import iterfzf
 from requests_ntlm import HttpNtlmAuth
 from tqdm import tqdm
 
-from src.guc import DownloadFile, DownloadList, DOWNLOADS_DIR
-from src.constants import HOST, COURSE_REGEX, COURSE_REPALCE
+from src.constants import COURSE_REGEX, COURSE_REPALCE, HOST
+from src.guc import DOWNLOADS_DIR, DownloadFile, DownloadList
 
 
 def authenticate_user(username, password):
@@ -116,6 +116,19 @@ def get_announcements(course_page_soup):
     announcements = course_page_soup.find('div', class_='row').find_all('p')
     return [announcement.text for announcement in announcements]
 
+def print_announcement(course, username, password, course_url, session, console):
+    '''print the announcement'''
+    announcements = get_announcements(get_course_soup(
+        course_url, username, password, session))
+    if len(announcements) == 0:
+        return
+    console.print(f'[bold][red]{course}[/red][/bold]', justify='center')
+    print()
+    for item in announcements:
+        if item == '':
+            continue
+        console.print(item.strip(), justify='center')
+    print()
 
 def get_downloaded_items(course):
     """list the already downloaded items"""
@@ -173,7 +186,7 @@ def get_random_color():
     """generate random color"""
     colors = ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#00FFFF', '#800000', '#FF1493',
               '#F0FFFF', '#D2691E', '#9400D3', '#7FFFD4', '#66CDAA', '#FF6347', '#000080']
-    return random.choice(colors)
+    return secrets.choice(colors)
 
 
 def download_file(file_to_download, username, password):

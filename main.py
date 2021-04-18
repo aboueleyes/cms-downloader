@@ -9,33 +9,17 @@ from rich import print as r_print
 from rich.console import Console
 
 from src.cms import (HOST, HttpNtlmAuth, authenticate_user, bs, choose_course,
-                 choose_files, download_files, filter_downloads,
-                 get_announcements, get_avaliable_courses, get_course_names,
-                 get_course_soup, get_cardinalities, get_display_items,
-                 get_downloaded_items, get_files, make_courses_dir, os,
-                 requests)
+                     choose_files, download_files, filter_downloads,
+                     get_avaliable_courses, get_course_names,
+                     get_cardinalities, get_display_items,
+                     get_downloaded_items, get_files, make_courses_dir, os,
+                     requests, print_announcement)
 
 
 def handler(_, __):
     """Handle SIGINT signals"""
     r_print('\n[red][bold]SIGINT or CTRL-C detected. Exiting[/bold][/red]')
     sys.exit(0)
-
-
-def print_announcement(course, username, password, course_url, session):
-    '''print the announcement'''
-    announcements = get_announcements(get_course_soup(
-        course_url, username, password, session))
-    console = Console()
-    if len(announcements) == 0:
-        return
-    console.print(f'[bold][red]{course}[/red][/bold]', justify='center')
-    print()
-    for item in announcements:
-        if item == '':
-            continue
-        console.print(item.strip(), justify='center')
-    print()
 
 
 if __name__ == "__main__":
@@ -81,7 +65,7 @@ if __name__ == "__main__":
         if args.new:
             for index, course_url in enumerate(course_links):
                 print_announcement(
-                    courses_name[index], username, password, course_url, session)
+                    courses_name[index], username, password, course_url, session, console)
             sys.exit(0)
         for index, course in enumerate(course_links):
             files = get_files(course, username, password, session)
@@ -95,7 +79,8 @@ if __name__ == "__main__":
     else:
         course_url, course = choose_course(courses_name, course_links)
         if args.new:
-            print_announcement(course, username, password, course_url, session)
+            print_announcement(course, username, password,
+                               course_url, session, console)
             sys.exit(0)
         files = get_files(course_url, username, password, session)
         for item in files.list:
