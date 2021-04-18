@@ -6,5 +6,5 @@ COURSE_REPALCE = '[\\1]\\2'
 
 # # for GIU uncomment the following lines
 # HOST='https://cms.giu-uni.de'
-# COURSE_REGEX ="\n*(.*)Acti.*"
-# COURSE_REPALCE='\\1'
+# COURSE_REGEX =r"(.*)Acti.*"
+# COURSE_REPALCE=r'\\1'
