@@ -7,3 +7,4 @@ tags
 *.vim
 *.code-workspace
 .vs*
+wily*
