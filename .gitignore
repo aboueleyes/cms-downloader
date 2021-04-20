@@ -5,3 +5,6 @@ tags
 .env
 .cou*
 *.vim
+*.code-workspace
+.vs*
+wily*
