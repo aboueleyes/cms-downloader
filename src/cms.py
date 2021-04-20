@@ -113,8 +113,8 @@ def get_files(course_url, username, password, session):
 
 def get_announcements(course_page_soup):
     """get course announcements"""
-    announcements = course_page_soup.find('div', class_='row').find_all('p')
-    return [announcement.text for announcement in announcements]
+    announcements = course_page_soup.find('div', class_='row').find_all('p'and 'b')
+    return set([announcement.text for announcement in announcements])
 
 def print_announcement(course, username, password, course_url, session, console):
     '''print the announcement'''
