@@ -63,7 +63,7 @@ def main():
             annoencments = get_announcments(get_course_soup(
                 course_url, username, password, session))
             for item in annoencments:
-                print(item)
+                print(item, end=" ")
             print()
             sys.exit(0)
         files = get_files(course_url, username, password, session)
