@@ -109,21 +109,9 @@ def get_files(course_url, username, password, session):
             r'[0-9]* - (.*)', "\\1", item.find("strong").text)
         files.list.append(DownloadFile(name, url, discreption, week))
     return files
-
-def end_node(tag):
-    if tag.name not in [ "p", "b"]:
-        return False
-    if isinstance(tag,NavigableString): 
-        return False
-    if not tag.text: 
-        return False
-    elif len(tag.find_all(text=False)) > 0: 
-        return False
-    return True 
+ 
 def get_announcements(course_page_soup):
     """get course announcements"""
-    
-
     announcements = course_page_soup.find('div', class_='row').find_all(lambda tag : tag.name in ['b','p'] and not tag.find('b'))
     return [announcement.text for announcement in announcements]
 
