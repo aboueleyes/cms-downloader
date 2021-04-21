@@ -124,7 +124,7 @@ def get_announcements(course_page_soup):
     """get course announcements"""
     
 
-    announcements = course_page_soup.find('div', class_='row').find_all(lambda tag : tag.name in ['b'] and not tag.find('b'))
+    announcements = course_page_soup.find('div', class_='row').find_all(lambda tag : tag.name in ['b','p'] and not tag.find('b'))
     return [announcement.text for announcement in announcements]
 
 def print_announcement(course, username, password, course_url, session, console):
