@@ -12,6 +12,7 @@ from iterfzf import iterfzf
 from requests_ntlm import HttpNtlmAuth
 from tqdm import tqdm
 
+from collections import OrderedDict
 from src.constants import COURSE_REGEX, COURSE_REPALCE, HOST
 from src.guc import DOWNLOADS_DIR, DownloadFile, DownloadList
 
@@ -112,8 +113,8 @@ def get_files(course_url, username, password, session):
  
 def get_announcements(course_page_soup):
     """get course announcements"""
-    announcements = course_page_soup.find('div', class_='row').find_all(lambda tag : tag.name in ['b','p'] and not tag.find('b'))
-    return [announcement.text for announcement in announcements]
+    announcements = course_page_soup.find('div', class_='row').find_all(lambda tag : (tag.name in ['b'] and not tag.find('b'))or(tag.name in['p']))
+    return OrderedDict.fromkeys([announcement.text for announcement in announcements])
 
 def print_announcement(course, username, password, course_url, session, console):
     '''print the announcement'''
