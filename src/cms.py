@@ -13,7 +13,7 @@ from requests_ntlm import HttpNtlmAuth
 from tqdm import tqdm
 
 from collections import OrderedDict
-from src.constants import COURSE_REGEX, COURSE_REPALCE, HOST
+from src.constants import COURSE_REGEX, COURSE_REPALCE, HOST, BACK
 from src.guc import DOWNLOADS_DIR, DownloadFile, DownloadList
 
 
@@ -165,10 +165,13 @@ def get_display_items(whole_files, names):
 def choose_files(downloadfiles):
     """prompt the user to choose files"""
     if not downloadfiles:
-        print("NO FILES YET")
         sys.exit(0)
+    ls =downloadfiles.get_descriptions()
+    ls.insert(0,BACK)
     items_to_download_names = iterfzf(
-        downloadfiles.get_descriptions(), multi=True)
+        ls, multi=True)
+    if items_to_download_names[0] == BACK:
+        return BACK
     files_to_download = DownloadList()
     for item in downloadfiles.list:
         for name in items_to_download_names:

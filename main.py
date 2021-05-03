@@ -10,16 +10,64 @@ from rich.console import Console
 
 from src.cms import (HOST, HttpNtlmAuth, authenticate_user, bs, choose_course,
                      choose_files, download_files, filter_downloads,
-                     get_avaliable_courses, get_course_names,
-                     get_cardinalities, get_display_items,
-                     get_downloaded_items, get_files, make_courses_dir, os,
-                     requests, print_announcement)
+                     get_avaliable_courses, get_cardinalities,
+                     get_course_names, get_display_items, get_downloaded_items,
+                     get_files, make_courses_dir, os, print_announcement,
+                     requests, BACK)
 
 
 def handler(_, __):
     """Handle SIGINT signals"""
     r_print('\n[red][bold]SIGINT or CTRL-C detected. Exiting[/bold][/red]')
     sys.exit(0)
+
+
+
+def download_all(pdf):
+    for index, course in enumerate(course_links):
+        files = get_files(course, username, password, session)
+        for item in files.list:
+            item.course = courses_name[index]
+        files.make_weeks()
+        if args.all:
+            download_files(files.list, username, password)
+        else:
+            download_files(files.list, username, password, pdf=True)
+
+
+def diplay_announcements():
+    for index, course_url in enumerate(course_links):
+        print_announcement(
+            courses_name[index], username, password, course_url, session, console)
+
+
+def interactive():
+    while True:
+        course_url, course = choose_course(courses_name, course_links)
+        files = get_files(course_url, username, password, session)
+        for item in files.list:
+            item.course = course
+            files.make_weeks()
+        files_to_download = choose_files(files)
+        if files_to_download != BACK:
+            download_files(files_to_download.list, username, password)
+            sys.exit(0)
+            
+
+def filter_interactive():
+    while True:
+        course_url, course = choose_course(courses_name, course_links)
+        files = get_files(course_url, username, password, session)
+        for item in files.list:
+            item.course = course
+            files.make_weeks()
+        already_downloaded = get_downloaded_items(course)
+        filtered = filter_downloads(files, already_downloaded)
+        files_to_display = get_display_items(files, filtered)
+        files_to_download = choose_files(files_to_display)
+        if files_to_download != BACK:
+            download_files(files_to_download.list, username, password)
+            sys.exit(0)
 
 
 if __name__ == "__main__":
@@ -51,7 +99,7 @@ if __name__ == "__main__":
             "[!] you are not authorized. review your credentials", style='bold red')
         os.remove(".env")
         sys.exit(1)
-
+    
     session = requests.Session()
     home_page = session.get(HOST,
                             verify=False, auth=HttpNtlmAuth(username, password))
@@ -60,37 +108,14 @@ if __name__ == "__main__":
     course_links = get_avaliable_courses(home_page_soup)
     courses_name = get_course_names(home_page_soup)
     make_courses_dir(courses_name)
-
-    if args.pdf or args.all:
-        if args.new:
-            for index, course_url in enumerate(course_links):
-                print_announcement(
-                    courses_name[index], username, password, course_url, session, console)
-            sys.exit(0)
-        for index, course in enumerate(course_links):
-            files = get_files(course, username, password, session)
-            for item in files.list:
-                item.course = courses_name[index]
-            files.make_weeks()
-            if args.all:
-                download_files(files.list, username, password)
-            else:
-                download_files(files.list, username, password, pdf=True)
-    else:
-        course_url, course = choose_course(courses_name, course_links)
-        if args.new:
-            print_announcement(course, username, password,
-                               course_url, session, console)
-            sys.exit(0)
-        files = get_files(course_url, username, password, session)
-        for item in files.list:
-            item.course = course
-        files.make_weeks()
-        if args.filter:
-            already_downloaded = get_downloaded_items(course)
-            filtered = filter_downloads(files, already_downloaded)
-            files_to_display = get_display_items(files, filtered)
-            files_to_download = choose_files(files_to_display)
-        else:
-            files_to_download = choose_files(files)
-        download_files(files_to_download.list, username, password)
+    if args.all:
+        download_all(False)
+    elif args.pdf:
+        download_all(True)    
+    elif args.new:
+        diplay_announcements()
+    elif args.filter:
+        filter_interactive()
+    else :
+        interactive()            
+        
