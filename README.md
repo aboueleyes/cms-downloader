@@ -43,13 +43,9 @@ Run in interactive mode but display only new items
 ```bash
 ./main.py -f
 ```
-Display announcements of a cousre in interactive mode
-```bash
-./main.py -n
-```
 Display all announcements for all courses
 ```bash
-./main.py -an
+./main.py -n
 ```
 ## Features
 1.  Parallel downloading
