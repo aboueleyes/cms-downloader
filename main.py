@@ -23,7 +23,7 @@ def handler(_, __):
 
 
 
-def download_all(pdf):
+def download_all():
     for index, course in enumerate(course_links):
         files = get_files(course, username, password, session)
         for item in files.list:
@@ -108,10 +108,8 @@ if __name__ == "__main__":
     course_links = get_avaliable_courses(home_page_soup)
     courses_name = get_course_names(home_page_soup)
     make_courses_dir(courses_name)
-    if args.all:
-        download_all(False)
-    elif args.pdf:
-        download_all(True)    
+    if args.all or args.pdf:
+        download_all()    
     elif args.new:
         diplay_announcements()
     elif args.filter:
