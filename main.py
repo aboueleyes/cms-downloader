@@ -47,12 +47,12 @@ def interactive():
         files = get_files(course_url, username, password, session)
         for item in files.list:
             item.course = course
-            files.make_weeks()
+        files.make_weeks()
         files_to_download = choose_files(files)
         if files_to_download != BACK:
             download_files(files_to_download.list, username, password)
             sys.exit(0)
-            
+
 
 def filter_interactive():
     while True:
@@ -99,7 +99,7 @@ if __name__ == "__main__":
             "[!] you are not authorized. review your credentials", style='bold red')
         os.remove(".env")
         sys.exit(1)
-    
+
     session = requests.Session()
     home_page = session.get(HOST,
                             verify=False, auth=HttpNtlmAuth(username, password))
@@ -109,11 +109,10 @@ if __name__ == "__main__":
     courses_name = get_course_names(home_page_soup)
     make_courses_dir(courses_name)
     if args.all or args.pdf:
-        download_all()    
+        download_all()
     elif args.new:
         diplay_announcements()
     elif args.filter:
         filter_interactive()
     else :
-        interactive()            
-        
+        interactive()

@@ -5,6 +5,7 @@ import re
 import secrets
 import sys
 import threading
+from collections import OrderedDict
 
 import requests
 from bs4 import BeautifulSoup as bs
@@ -12,8 +13,7 @@ from iterfzf import iterfzf
 from requests_ntlm import HttpNtlmAuth
 from tqdm import tqdm
 
-from collections import OrderedDict
-from src.constants import COURSE_REGEX, COURSE_REPALCE, HOST, BACK
+from src.constants import BACK, COURSE_REGEX, COURSE_REPALCE, HOST
 from src.guc import DOWNLOADS_DIR, DownloadFile, DownloadList
 
 

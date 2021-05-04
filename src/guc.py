@@ -77,3 +77,4 @@ class DownloadList:
                     f"{DOWNLOADS_DIR}/{item.course}/{sanitize(item.week)}")
             except FileExistsError:
                 pass
+
