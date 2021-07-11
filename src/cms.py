@@ -110,7 +110,7 @@ def get_files(course_url, username, password, session):
             r'[0-9]* - (.*)', "\\1", item.find("strong").text)
         files.list.append(DownloadFile(name, url, discreption, week))
     return files
- 
+
 def get_announcements(course_page_soup):
     """get course announcements"""
     announcements = course_page_soup.find('div', class_='row').find_all(lambda tag : (tag.name in ['b'] and not tag.find('b'))or(tag.name in['p']))

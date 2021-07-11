@@ -60,7 +60,7 @@ def filter_interactive():
         files = get_files(course_url, username, password, session)
         for item in files.list:
             item.course = course
-            files.make_weeks()
+        files.make_weeks()
         already_downloaded = get_downloaded_items(course)
         filtered = filter_downloads(files, already_downloaded)
         files_to_display = get_display_items(files, filtered)
