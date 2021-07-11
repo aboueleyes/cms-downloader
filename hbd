@@ -1,5 +1,0 @@
-factorial n =
-     2^(n - popCount n) * product [(q k)^k | forall k, k >= 1]
-     where
-     q k = product [j | forall j, n*2^(-k) < j <= n*2^(-k+1), odd j]
-
