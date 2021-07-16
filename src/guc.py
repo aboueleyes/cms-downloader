@@ -7,8 +7,7 @@ from src.constants import DOWNLOADS_DIR
 
 
 class DownloadFile:
-    """[A File dataType]
-    """
+    """[A File dataType]"""
 
     def __init__(self, name, url, discreption, week):
         """[Constructor]
@@ -21,27 +20,24 @@ class DownloadFile:
         """
         self.name = name
         self.url = url
-        self.ext = ''
+        self.ext = ""
         self.discreption = discreption
         self.week = week
-        self.course = ''
-        self.path = ''
+        self.course = ""
+        self.path = ""
 
     def normalize(self):
-        """[Update The extension and the week and path of the file]
-        """
-        self.ext = '.' + self.url.rsplit('.', 1)[1]
+        """[Update The extension and the week and path of the file]"""
+        self.ext = "." + self.url.rsplit(".", 1)[1]
         self.week = sanitize(self.week)
-        self.path = f'{DOWNLOADS_DIR}/{self.course}/{self.week}/{sanitize(self.name)+sanitize(self.ext)}'
+        self.path = f"{DOWNLOADS_DIR}/{self.course}/{self.week}/{sanitize(self.name)+sanitize(self.ext)}"
 
 
 class DownloadList:
-    """[A list of of DownloadsFile]
-    """
+    """[A list of of DownloadsFile]"""
 
     def __init__(self):
-        """[Simple Constructor]
-        """
+        """[Simple Constructor]"""
         self.list = []
 
     def get_names(self):
@@ -69,12 +65,9 @@ class DownloadList:
         return [item.week for item in self.list]
 
     def make_weeks(self):
-        """[make the weeks for the files]
-        """
+        """[make the weeks for the files]"""
         for item in self.list:
             try:
-                os.makedirs(
-                    f"{DOWNLOADS_DIR}/{item.course}/{sanitize(item.week)}")
+                os.makedirs(f"{DOWNLOADS_DIR}/{item.course}/{sanitize(item.week)}")
             except FileExistsError:
                 pass
-
