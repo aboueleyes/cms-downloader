@@ -5,7 +5,6 @@ import re
 import secrets
 import sys
 import threading
-import toml
 from collections import OrderedDict
 
 import requests
